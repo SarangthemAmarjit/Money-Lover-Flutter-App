@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:moneylover/logic/Authflow/auth_flow_cubit.dart';
+import 'package:moneylover/logic/fetchdata/cubit/fetchdata_cubit.dart';
 
 class MultiproviderWrapper extends StatelessWidget {
   final Widget child;
@@ -11,6 +12,9 @@ class MultiproviderWrapper extends StatelessWidget {
     return MultiBlocProvider(providers: [
       BlocProvider(
         create: (context) => AuthFlowCubit(),
+      ),
+      BlocProvider(
+        create: (context) => FetchdataCubit(),
       ),
     ], child: child);
   }
