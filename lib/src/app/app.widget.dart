@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:moneylover/core/multiprovider.wrapper.dart';
 import 'package:moneylover/router/router.gr.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
         routeInformationParser: _appRouter.defaultRouteParser(),
         debugShowCheckedModeBanner: false,
         title: 'Moneylover',
-        theme: ThemeData(),
+        theme: ThemeData(textTheme: GoogleFonts.kreonTextTheme()),
         builder: EasyLoading.init(),
       ),
     );

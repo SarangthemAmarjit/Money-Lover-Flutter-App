@@ -10,10 +10,12 @@ part 'fetchdata_state.dart';
 class FetchdataCubit extends Cubit<FetchdataState> {
   FetchdataCubit()
       : super(const FetchdataState(
-          amount: 0,
-          categoyname: [],
-          transaction: [],
-        )) {
+            amount: 0,
+            categoyname: [],
+            transaction: [],
+            cateogoryname_ex: [],
+            transaction_ex: [],
+            expensetotalamount: 0)) {
     getdatalist();
   }
 
@@ -27,31 +29,49 @@ class FetchdataCubit extends Cubit<FetchdataState> {
           .snapshots()
           .listen((event) async {
         int totalamount = 0;
+        int totalamountex = 0;
         List<DocumentSnapshot<Object?>> cateogoryname = [];
         List<QueryDocumentSnapshot<Object?>> transaction = [];
+        List<DocumentSnapshot<Object?>> cateogorynameEx = [];
+        List<QueryDocumentSnapshot<Object?>> transactionEx = [];
         for (var message in event.docs) {
           transaction.add(message);
           var data = await ServiceApi()
               .getspecificcategory(id: message['category_id']);
+          cateogoryname.add(data);
           emit(FetchdataState(
-              amount: 0, transaction: transaction, categoyname: cateogoryname));
+              amount: 0,
+              transaction: transaction,
+              categoyname: cateogoryname,
+              cateogoryname_ex: const [],
+              transaction_ex: const [],
+              expensetotalamount: 0));
           cateogoryname.add(data);
           if (data['type'] == 'Income') {
             totalamount = totalamount + message['amount'] as int;
             emit(FetchdataState(
                 amount: totalamount,
                 categoyname: cateogoryname,
-                transaction: transaction));
+                transaction: transaction,
+                cateogoryname_ex: const [],
+                transaction_ex: const [],
+                expensetotalamount: 0));
             log('Income');
           } else {
             totalamount = totalamount - message['amount'] as int;
+            totalamountex = totalamountex + message['amount'] as int;
 
+            cateogorynameEx.add(data);
+            transactionEx.add(message);
             log('Expenditure');
             log(totalamount.toString());
             emit(FetchdataState(
                 amount: totalamount,
                 categoyname: cateogoryname,
-                transaction: transaction));
+                transaction: transaction,
+                cateogoryname_ex: cateogorynameEx,
+                transaction_ex: transactionEx,
+                expensetotalamount: totalamountex));
           }
         }
       });

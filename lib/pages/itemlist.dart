@@ -14,6 +14,9 @@ class SelectionPage extends StatefulWidget {
 }
 
 class _TransactionPageState extends State<SelectionPage> {
+  IconData? itemicon;
+  Color? avatarcolor;
+  Color? iconcolor;
   final CollectionReference categorylist =
       FirebaseFirestore.instance.collection('category');
   TextEditingController categorynamecontroller = TextEditingController();
@@ -78,7 +81,40 @@ class _TransactionPageState extends State<SelectionPage> {
                                 itemBuilder: ((context, index) {
                                   final DocumentSnapshot documentSnapshot =
                                       streamsnapshot.data!.docs[index];
+                                  switch (documentSnapshot['name']) {
+                                    case 'Transportation':
+                                      itemicon = FontAwesomeIcons.train;
+                                      avatarcolor = Colors.yellow;
+                                      iconcolor = Colors.blue;
 
+                                      break;
+                                    case 'Foods and Drink':
+                                      itemicon = FontAwesomeIcons.martiniGlass;
+                                      avatarcolor = const Color.fromARGB(
+                                          255, 95, 208, 249);
+                                      iconcolor = Colors.red;
+
+                                      break;
+                                    case 'Gas Bill':
+                                      itemicon = FontAwesomeIcons.gasPump;
+                                      avatarcolor = Colors.red;
+                                      iconcolor = Colors.white;
+
+                                      break;
+                                    case 'Salary':
+                                      itemicon = FontAwesomeIcons.coins;
+                                      avatarcolor = Colors.yellow;
+                                      iconcolor = const Color.fromARGB(
+                                          255, 86, 237, 44);
+
+                                      break;
+
+                                    default:
+                                      avatarcolor = const Color.fromARGB(
+                                          255, 209, 54, 244);
+                                      itemicon =
+                                          FontAwesomeIcons.fileInvoiceDollar;
+                                  }
                                   return InkWell(
                                     onTap: () {
                                       Navigator.pop(

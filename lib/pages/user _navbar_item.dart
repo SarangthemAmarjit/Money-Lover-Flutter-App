@@ -33,6 +33,8 @@ class _NavigationPageState extends State<NavigationPage> {
     });
   }
 
+  var datetimenow = DateTime.now();
+
   var format = DateFormat("dd-MM-yyyy");
   DateTime? initialdate = DateTime(2010);
   Timestamp? datetime2;
@@ -48,7 +50,7 @@ class _NavigationPageState extends State<NavigationPage> {
             padding: const EdgeInsets.only(bottom: 10),
             child: DateTimeField(
               decoration: InputDecoration(
-                hintText: 'Select Date',
+                hintText: 'Today',
                 hintStyle:
                     GoogleFonts.kreon(color: Colors.black26, fontSize: 18),
               ),
@@ -56,7 +58,7 @@ class _NavigationPageState extends State<NavigationPage> {
               onShowPicker: (context, currentValue) {
                 return showDatePicker(
                         context: context,
-                        initialDate: initialdate!,
+                        initialDate: DateTime.now(),
                         firstDate: DateTime(2010),
                         lastDate: DateTime(2025),
                         helpText: "SELECT DATE OF BIRTH",
@@ -68,7 +70,12 @@ class _NavigationPageState extends State<NavigationPage> {
                         errorInvalidText: "Date Out of Range")
                     .then((value) {
                   setState(() {
-                    datetime2 = Timestamp.fromDate(value!);
+                    if (datetimenow == DateTime.now()) {
+                      datetime2 = Timestamp.fromDate(datetimenow);
+                    } else {
+                      datetimenow = value!;
+                      datetime2 = Timestamp.fromDate(value);
+                    }
                   });
                   return value;
                 });
