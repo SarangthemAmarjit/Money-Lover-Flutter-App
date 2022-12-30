@@ -143,6 +143,7 @@ class _NavigationPageState extends State<NavigationPage> {
               ),
               label: 'Account'),
         ],
+        type: BottomNavigationBarType.fixed,
         iconSize: 25,
         currentIndex: currentselectedindex,
         elevation: 5,
