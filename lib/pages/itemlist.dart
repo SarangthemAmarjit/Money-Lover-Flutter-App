@@ -126,6 +126,11 @@ class _TransactionPageState extends State<SelectionPage> {
                                     child: Padding(
                                       padding: const EdgeInsets.only(bottom: 2),
                                       child: ListTile(
+                                        leading: CircleAvatar(
+                                            backgroundColor: avatarcolor,
+                                            radius: 18,
+                                            child: FaIcon(itemicon,
+                                                color: iconcolor)),
                                         tileColor: Colors.white,
                                         title: Text(
                                           documentSnapshot['name'],

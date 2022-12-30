@@ -8,10 +8,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:moneylover/logic/fetchdata/cubit/fetchdata_cubit.dart';
 import 'package:moneylover/logic/fetchdata2/cubit/fetchrecentdata_cubit.dart';
+import 'package:moneylover/refactor/plotchart.dart';
 import 'package:moneylover/router/router.gr.dart';
 import 'package:moneylover/services/auth.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart';
+import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,7 +22,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   final CollectionReference transaction =
       FirebaseFirestore.instance.collection('transaction');
   var currencyformat =
@@ -36,10 +38,12 @@ class _HomePageState extends State<HomePage> {
     final recent = context.watch<FetchrecentdataCubit>().state;
     int totalamount = s.amount;
     List<DocumentSnapshot<Object?>> cateogoryname = recent.categoyname;
-    List<QueryDocumentSnapshot<Object?>> transaction = recent.transaction;
+    List transaction = recent.transaction;
     List<DocumentSnapshot<Object?>> cateogorynameEx = s.cateogoryname_ex;
     List<QueryDocumentSnapshot<Object?>> transactionEx = s.transaction_ex;
     int expensetotalamount = s.expensetotalamount;
+    TabController tabController =
+        TabController(length: 2, vsync: this, animationDuration: Duration.zero);
 
     return Scaffold(
         backgroundColor: const Color.fromARGB(255, 245, 242, 242),
@@ -55,67 +59,71 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: TextButton.icon(
-                    style: ButtonStyle(
-                        foregroundColor: MaterialStateProperty.all(
-                            const Color.fromARGB(255, 88, 56, 232))),
-                    icon: const Icon(Icons.logout),
-                    label: Text(
-                      'Log Out',
-                      style: GoogleFonts.kreon(),
-                    ),
-                    onPressed: () async {
-                      showDialog(
-                          context: context,
-                          builder: ((context) {
-                            return AlertDialog(
-                              title: Text(
-                                'Confirm',
-                                style: GoogleFonts.kreon(),
-                              ),
-                              content: Text('Do You Want to Logout?',
-                                  style: GoogleFonts.kreon()),
-                              actions: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.green),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("CANCEL",
-                                            style: GoogleFonts.kreon())),
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: ElevatedButton(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10),
+                    child: TextButton.icon(
+                      style: ButtonStyle(
+                          foregroundColor: MaterialStateProperty.all(
+                              const Color.fromARGB(255, 88, 56, 232))),
+                      icon: const Icon(Icons.logout),
+                      label: Text(
+                        'Log Out',
+                        style: GoogleFonts.kreon(),
+                      ),
+                      onPressed: () async {
+                        showDialog(
+                            context: context,
+                            builder: ((context) {
+                              return AlertDialog(
+                                title: Text(
+                                  'Confirm',
+                                  style: GoogleFonts.kreon(),
+                                ),
+                                content: Text('Do You Want to Logout?',
+                                    style: GoogleFonts.kreon()),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.green),
-                                          onPressed: () async {
-                                            final prefs =
-                                                await SharedPreferences
-                                                    .getInstance();
-                                            log('Log Out');
-                                            prefs
-                                                .remove('uid')
-                                                .whenComplete(() {
-                                              AuthService().Googlesignout();
-                                              context.router
-                                                  .push(const AuthFlowRoute());
-                                            });
+                                          onPressed: () {
+                                            Navigator.pop(context);
                                           },
-                                          child: Text("YES",
+                                          child: Text("CANCEL",
                                               style: GoogleFonts.kreon())),
-                                    )
-                                  ],
-                                ),
-                              ],
-                            );
-                          }));
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.green),
+                                            onPressed: () async {
+                                              final prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              log('Log Out');
+                                              prefs
+                                                  .remove('uid')
+                                                  .whenComplete(() {
+                                                AuthService().Googlesignout();
+                                                context.router.push(
+                                                    const AuthFlowRoute());
+                                              });
+                                            },
+                                            child: Text("YES",
+                                                style: GoogleFonts.kreon())),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              );
+                            }));
 
-                      log('Done');
-                    },
+                        log('Done');
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -372,11 +380,118 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width,
-                    height: 570,
+                    height: 600,
                     child: Column(
                       children: [
                         const SizedBox(
-                          height: 270,
+                          height: 20,
+                        ),
+                        Container(
+                          width: 300.0,
+                          height: 40.0,
+                          decoration: const BoxDecoration(
+                            color: Color.fromARGB(83, 229, 228, 228),
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: TabBar(
+                                indicatorSize: TabBarIndicatorSize.tab,
+                                indicator: const BubbleTabIndicator(
+                                  indicatorRadius: 10,
+                                  indicatorHeight: 33.0,
+                                  indicatorColor: Colors.white,
+                                  tabBarIndicatorSize: TabBarIndicatorSize.tab,
+                                ),
+                                labelColor: Colors.black,
+                                unselectedLabelColor:
+                                    const Color.fromARGB(255, 152, 151, 151),
+                                labelStyle: GoogleFonts.kreon(),
+                                unselectedLabelStyle: GoogleFonts.kreon(),
+                                controller: tabController,
+                                automaticIndicatorColorAdjustment: true,
+                                tabs: const [
+                                  Tab(text: "Week"),
+                                  Tab(text: "Month")
+                                ]),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.maxFinite,
+                          height: 250,
+                          child: TabBarView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              controller: tabController,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 26, right: 26, top: 20),
+                                      child: Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              currencyformat
+                                                  .format(expensetotalamount),
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 25),
+                                            ),
+                                            Text(
+                                              'Total spend this week',
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 15,
+                                                  color: Colors.grey),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    BargraphPage(
+                                      amount: expensetotalamount,
+                                      text1: 'Last Week',
+                                      text2: 'This Week',
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 26, right: 26, top: 20),
+                                      child: Container(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              currencyformat
+                                                  .format(expensetotalamount),
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 25),
+                                            ),
+                                            Text(
+                                              'Total spend this month',
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 15,
+                                                  color: Colors.grey),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    BargraphPage(
+                                      amount: expensetotalamount,
+                                      text1: 'Last Month',
+                                      text2: 'This Month',
+                                    ),
+                                  ],
+                                ),
+                              ]),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 26, bottom: 26),
@@ -427,11 +542,26 @@ class _HomePageState extends State<HomePage> {
                                 padding:
                                     const EdgeInsets.symmetric(horizontal: 10),
                                 child: ListTile(
-                                  leading: CircleAvatar(
-                                      backgroundColor: avatarcolor,
-                                      radius: 18,
-                                      child:
-                                          FaIcon(itemicon, color: iconcolor)),
+                                  leading: Stack(
+                                    alignment: Alignment.bottomRight,
+                                    children: [
+                                      CircleAvatar(
+                                          backgroundColor: avatarcolor,
+                                          radius: 18,
+                                          child: FaIcon(itemicon,
+                                              color: iconcolor)),
+                                      const CircleAvatar(
+                                          backgroundColor:
+                                              Color.fromARGB(255, 43, 56, 96),
+                                          radius: 6,
+                                          child: FaIcon(
+                                            FontAwesomeIcons.wallet,
+                                            size: 8,
+                                            color: Color.fromARGB(
+                                                255, 248, 135, 79),
+                                          )),
+                                    ],
+                                  ),
                                   title: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -498,7 +628,7 @@ class _HomePageState extends State<HomePage> {
                           child: ListView.builder(
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
-                              itemCount: cateogoryname.length,
+                              itemCount: transaction.length,
                               itemBuilder: ((context, index) {
                                 Timestamp date = transaction[index]['date'];
                                 var datetime = date.toDate();
@@ -543,11 +673,26 @@ class _HomePageState extends State<HomePage> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 10),
                                   child: ListTile(
-                                    leading: CircleAvatar(
-                                        backgroundColor: avatarcolor,
-                                        radius: 18,
-                                        child:
-                                            FaIcon(itemicon, color: iconcolor)),
+                                    leading: Stack(
+                                      alignment: Alignment.bottomRight,
+                                      children: [
+                                        CircleAvatar(
+                                            backgroundColor: avatarcolor,
+                                            radius: 18,
+                                            child: FaIcon(itemicon,
+                                                color: iconcolor)),
+                                        const CircleAvatar(
+                                            backgroundColor:
+                                                Color.fromARGB(255, 43, 56, 96),
+                                            radius: 6,
+                                            child: FaIcon(
+                                              FontAwesomeIcons.wallet,
+                                              size: 8,
+                                              color: Color.fromARGB(
+                                                  255, 248, 135, 79),
+                                            )),
+                                      ],
+                                    ),
                                     title: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

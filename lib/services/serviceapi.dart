@@ -14,18 +14,54 @@ class ServiceApi {
     return await category.doc().set({'name': name, 'type': type});
   }
 
-  Future<void> addtransaction({
+  Future gettotalamount() async {
+    List itemsList = [];
+
+    try {
+      final messages = await transaction.get();
+      for (var message in messages.docs) {
+        itemsList.add(message.data());
+        print(message.data());
+      }
+
+      return itemsList;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  Future addtransaction({
     required int amount,
     required String categoryid,
     required String notes,
     required Timestamp date,
   }) async {
-    return await transaction.doc().set({
-      'amount': amount,
-      'category_id': categoryid,
-      'date': date,
-      'note': notes
-    });
+    List categoryidlist = [];
+    List amountlist = [];
+    List idlist = [];
+    final messages = await transaction.get();
+    for (var message in messages.docs) {
+      categoryidlist.add(message['category_id']);
+      amountlist.add(message['amount']);
+      idlist.add(message.id);
+    }
+    if (categoryidlist.contains(categoryid)) {
+      int index = categoryidlist.indexOf(categoryid);
+
+      return await transaction.doc(idlist[index]).update({
+        'amount': amountlist[index] + amount,
+        'category_id': categoryid,
+        'date': date,
+        'note': notes
+      });
+    } else {
+      return await transaction.doc().set({
+        'amount': amount,
+        'category_id': categoryid,
+        'date': date,
+        'note': notes
+      });
+    }
   }
 
   Future getdocumentid() async {

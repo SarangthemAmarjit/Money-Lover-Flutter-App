@@ -24,19 +24,18 @@ class FetchrecentdataCubit extends Cubit<FetchrecentdataState> {
           .snapshots()
           .listen((event) async {
         List<DocumentSnapshot<Object?>> cateogoryname = [];
-        List<QueryDocumentSnapshot<Object?>> transaction = [];
+        List transaction = [];
 
         for (var message in event.docs) {
-          transaction.add(message);
+          transaction.add(message.data());
           var data = await ServiceApi()
               .getspecificcategory(id: message['category_id']);
           cateogoryname.add(data);
-
-          emit(FetchrecentdataState(
-            transaction: transaction,
-            categoyname: cateogoryname,
-          ));
         }
+        emit(FetchrecentdataState(
+          transaction: transaction,
+          categoyname: cateogoryname,
+        ));
       });
     } catch (e) {
       return null;

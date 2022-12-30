@@ -6,7 +6,7 @@ class FetchrecentdataState extends Equatable {
     required this.categoyname,
   });
 
-  final List<QueryDocumentSnapshot<Object?>> transaction;
+  final List transaction;
   final List<DocumentSnapshot<Object?>> categoyname;
 
   @override
