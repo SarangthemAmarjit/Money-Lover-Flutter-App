@@ -18,6 +18,19 @@ class FetchdataCubit extends Cubit<FetchdataState> {
             expensetotalamount: 0)) {
     getdatalist();
   }
+  Future getqueryyear({required String year}) async {
+    var start = DateTime.parse("$year-01-01");
+    var end = DateTime.parse("$year-12-31");
+    var finalstart = Timestamp.fromDate(start);
+    var finalend = Timestamp.fromDate(end);
+
+    FirebaseFirestore.instance
+        .collection("expenditure")
+        .where('date', isGreaterThan: finalstart)
+        .where('date', isLessThan: finalend)
+        .orderBy('date', descending: true)
+        .snapshots();
+  }
 
   Future getdatalist() async {
     final CollectionReference expenditurelist =

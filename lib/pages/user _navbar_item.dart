@@ -33,7 +33,8 @@ class _NavigationPageState extends State<NavigationPage> {
     });
   }
 
-  var datetimenow = DateTime.now();
+  DateTime onlyDate =
+      DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
 
   var format = DateFormat("dd-MM-yyyy");
   DateTime? initialdate = DateTime(2010);
@@ -70,13 +71,9 @@ class _NavigationPageState extends State<NavigationPage> {
                         errorInvalidText: "Date Out of Range")
                     .then((value) {
                   setState(() {
-                    if (datetimenow == DateTime.now()) {
-                      datetime2 = Timestamp.fromDate(datetimenow);
-                    } else {
-                      datetimenow = value!;
-                      datetime2 = Timestamp.fromDate(value);
-                    }
+                    datetime2 = Timestamp.fromDate(value!);
                   });
+
                   return value;
                 });
               },
@@ -194,22 +191,37 @@ class _NavigationPageState extends State<NavigationPage> {
                                 style: GoogleFonts.kreon(fontSize: 20),
                               ),
                             ),
-                            trailing: InkWell(
-                              onTap: () async {
-                                await ServiceApi().addtransaction(
-                                    amount: int.parse(amountcontroller.text),
-                                    categoryid: categoryid,
-                                    notes: notecontroller.text,
-                                    date: datetime2!);
-                                Navigator.pop(context);
-                                CustomSnackBar(
-                                    context,
-                                    const Text(
-                                        'Added Transaction Successfully'),
-                                    Colors.green);
-                                setState(() {
-                                  resultvalue = 'Select Category';
-                                });
+                            trailing: TextButton(
+                              onPressed: () async {
+                                if (amountcontroller.text.isEmpty ||
+                                    categoryid.isEmpty ||
+                                    notecontroller.text.isEmpty) {
+                                  context.router.pop();
+                                  CustomSnackBar(
+                                      context,
+                                      Text(
+                                        'All Fields Are Mandatory',
+                                        style: GoogleFonts.kreon(),
+                                      ),
+                                      Colors.red);
+                                } else {
+                                  await ServiceApi().addtransaction(
+                                      amount: int.parse(amountcontroller.text),
+                                      categoryid: categoryid,
+                                      notes: notecontroller.text,
+                                      date: datetime2 ??
+                                          Timestamp.fromDate(DateTime.now()));
+                                  Navigator.pop(context);
+
+                                  CustomSnackBar(
+                                      context,
+                                      const Text(
+                                          'Added Transaction Successfully'),
+                                      Colors.green);
+                                  setState(() {
+                                    resultvalue = 'Select Category';
+                                  });
+                                }
                               },
                               child: Text(
                                 'SAVE',

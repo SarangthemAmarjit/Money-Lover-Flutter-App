@@ -17,5 +17,6 @@ class FetchdataState extends Equatable {
   final List<QueryDocumentSnapshot<Object?>> transaction_ex;
 
   @override
-  List get props => [amount, transaction, categoyname];
+  List get props =>
+      [amount, transaction, categoyname, cateogoryname_ex, transaction_ex];
 }

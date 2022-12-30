@@ -8,6 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:moneylover/logic/fetchdata/cubit/fetchdata_cubit.dart';
 import 'package:moneylover/logic/fetchdata2/cubit/fetchrecentdata_cubit.dart';
+import 'package:moneylover/logic/querydata/cubit/querydatathismonth_cubit.dart';
+import 'package:moneylover/logic/querydatalastmonth/cubit/querydatalastmonth_cubit.dart';
+import 'package:moneylover/logic/querydatalastweek/cubit/querydatalastweek_cubit.dart';
+import 'package:moneylover/logic/querydatathisweek/cubit/querydatathisweek_cubit.dart';
 import 'package:moneylover/refactor/plotchart.dart';
 import 'package:moneylover/router/router.gr.dart';
 import 'package:moneylover/services/auth.dart';
@@ -36,12 +40,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final s = context.watch<FetchdataCubit>().state;
     final recent = context.watch<FetchrecentdataCubit>().state;
+    final thismonth = context.watch<QuerydatathismonthCubit>().state;
+    final lastmonth = context.watch<QuerydatalastmonthCubit>().state;
+    final thisweek = context.watch<QuerydatathisweekCubit>().state;
+    final lastweek = context.watch<QuerydatalastweekCubit>().state;
     int totalamount = s.amount;
     List<DocumentSnapshot<Object?>> cateogoryname = recent.categoyname;
     List transaction = recent.transaction;
     List<DocumentSnapshot<Object?>> cateogorynameEx = s.cateogoryname_ex;
     List<QueryDocumentSnapshot<Object?>> transactionEx = s.transaction_ex;
     int expensetotalamount = s.expensetotalamount;
+    int thismonthExpenditure = thismonth.expensetotalamountthismonth;
+    int lastmonthExpenditure = lastmonth.expensetotalamountlastmonth;
+    int thisweekExpenditure = thisweek.expensetotalamountthisweek;
+    int lastweekExpenditure = lastweek.expensetotalamountthisweek;
+    log(lastmonthExpenditure.toString());
     TabController tabController =
         TabController(length: 2, vsync: this, animationDuration: Duration.zero);
 
@@ -436,7 +449,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           children: [
                                             Text(
                                               currencyformat
-                                                  .format(expensetotalamount),
+                                                  .format(thisweekExpenditure),
                                               style: GoogleFonts.kreon(
                                                   fontSize: 25),
                                             ),
@@ -451,9 +464,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     BargraphPage(
-                                      amount: expensetotalamount,
+                                      thismonthamount: thisweekExpenditure,
                                       text1: 'Last Week',
                                       text2: 'This Week',
+                                      lastmonthamount: lastweekExpenditure,
                                     ),
                                   ],
                                 ),
@@ -470,7 +484,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           children: [
                                             Text(
                                               currencyformat
-                                                  .format(expensetotalamount),
+                                                  .format(thismonthExpenditure),
                                               style: GoogleFonts.kreon(
                                                   fontSize: 25),
                                             ),
@@ -485,9 +499,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                       ),
                                     ),
                                     BargraphPage(
-                                      amount: expensetotalamount,
+                                      thismonthamount: thismonthExpenditure,
                                       text1: 'Last Month',
                                       text2: 'This Month',
+                                      lastmonthamount: lastmonthExpenditure,
                                     ),
                                   ],
                                 ),
