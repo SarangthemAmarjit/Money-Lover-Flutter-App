@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ServiceApi {
-  final CollectionReference category =
+  final CollectionReference<Map<String, dynamic>> category =
       FirebaseFirestore.instance.collection('category');
   final CollectionReference transaction =
       FirebaseFirestore.instance.collection('transaction');
@@ -36,32 +36,12 @@ class ServiceApi {
     required String notes,
     required Timestamp date,
   }) async {
-    List categoryidlist = [];
-    List amountlist = [];
-    List idlist = [];
-    final messages = await transaction.get();
-    for (var message in messages.docs) {
-      categoryidlist.add(message['category_id']);
-      amountlist.add(message['amount']);
-      idlist.add(message.id);
-    }
-    if (categoryidlist.contains(categoryid)) {
-      int index = categoryidlist.indexOf(categoryid);
-
-      return await transaction.doc(idlist[index]).update({
-        'amount': amountlist[index] + amount,
-        'category_id': categoryid,
-        'date': date,
-        'note': notes
-      });
-    } else {
-      return await transaction.doc().set({
-        'amount': amount,
-        'category_id': categoryid,
-        'date': date,
-        'note': notes
-      });
-    }
+    return await transaction.doc().set({
+      'amount': amount,
+      'category_id': categoryid,
+      'date': date,
+      'note': notes
+    });
   }
 
   Future getdocumentid() async {
@@ -93,7 +73,7 @@ class ServiceApi {
         .snapshots();
   }
 
-  Future<DocumentSnapshot> getspecificcategory({
+  Future<DocumentSnapshot<Map<String, dynamic>>> getspecificcategory({
     required String id,
   }) async {
     return await category.doc(id).get();

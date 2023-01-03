@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:moneylover/pages/homepage.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+import 'package:moneylover/pages/transaction.dart';
 import 'package:moneylover/refactor/snackbar.dart';
 import 'package:moneylover/router/router.gr.dart';
 import 'package:moneylover/services/serviceapi.dart';
@@ -20,7 +21,7 @@ class NavigationPage extends StatefulWidget {
 class _NavigationPageState extends State<NavigationPage> {
   List itm = [
     const HomePage(),
-    const Text('Transaction'),
+    const TransactionPage(),
     const Text('Add Amount'),
     const Text('Planning'),
     const Text('Account'),
@@ -195,8 +196,7 @@ class _NavigationPageState extends State<NavigationPage> {
                             trailing: TextButton(
                               onPressed: () async {
                                 if (amountcontroller.text.isEmpty ||
-                                    categoryid.isEmpty ||
-                                    notecontroller.text.isEmpty) {
+                                    categoryid.isEmpty) {
                                   context.router.pop();
                                   CustomSnackBar(
                                       context,

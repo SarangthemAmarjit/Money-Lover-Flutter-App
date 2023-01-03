@@ -276,6 +276,8 @@ class _TransactionPageState extends State<SelectionPage> {
                                                     ),
                                                     Flexible(
                                                       child: RadioListTile(
+                                                          activeColor:
+                                                              Colors.green,
                                                           toggleable: true,
                                                           title: Text(
                                                             "Income",
@@ -294,6 +296,8 @@ class _TransactionPageState extends State<SelectionPage> {
                                                     ),
                                                     Flexible(
                                                       child: RadioListTile(
+                                                          activeColor:
+                                                              Colors.green,
                                                           title: Text(
                                                             "Expense",
                                                             style: GoogleFonts

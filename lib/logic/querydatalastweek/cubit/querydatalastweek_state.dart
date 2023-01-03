@@ -2,11 +2,11 @@ part of 'querydatalastweek_cubit.dart';
 
 class QuerydatalastweekState extends Equatable {
   const QuerydatalastweekState({
-    required this.expensetotalamountthisweek,
+    required this.expensetotalamountlastweek,
   });
 
-  final int expensetotalamountthisweek;
+  final int expensetotalamountlastweek;
 
   @override
-  List get props => [expensetotalamountthisweek];
+  List get props => [expensetotalamountlastweek];
 }

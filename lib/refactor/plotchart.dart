@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:moneylover/refactor/chart.dart';
@@ -19,6 +21,8 @@ class BargraphPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    log(lastmonthamount.toString());
+    log(thismonthamount.toString());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: SizedBox(
@@ -34,7 +38,10 @@ class BargraphPage extends StatelessWidget {
             primaryYAxis: NumericAxis(
               labelStyle: GoogleFonts.kreon(),
               numberFormat: NumberFormat.compact(),
-              minimum: 0, maximum: thismonthamount + 500,
+              minimum: 0,
+              maximum: thismonthamount > lastmonthamount
+                  ? thismonthamount + 500
+                  : lastmonthamount + 500,
               interval: 2000,
               majorGridLines: const MajorGridLines(width: 0),
               //Hide the axis line of x-axis

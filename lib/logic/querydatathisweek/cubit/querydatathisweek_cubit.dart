@@ -14,13 +14,13 @@ class QuerydatathisweekCubit extends Cubit<QuerydatathisweekState> {
   }
 
   Map<String, dynamic> week = {
-    "Sunday": 0,
-    "Monday": 1,
-    "Tuesday": 2,
-    "Wednesday": 3,
-    "Thursday": 4,
-    "Friday": 5,
-    "Saturday": 6
+    "Monday": 0,
+    "Tuesday": 1,
+    "Wednesday": 2,
+    "Thursday": 3,
+    "Friday": 4,
+    "Saturday": 5,
+    "Sunday": 6,
   };
   Future getthisweekquery() async {
     DateTime dateTime = DateTime.now();
@@ -29,35 +29,115 @@ class QuerydatathisweekCubit extends Cubit<QuerydatathisweekState> {
     int weekend = 6 - weekstart;
     int date = dateTime.day;
     String month = dateTime.month.toString();
-    String year = dateTime.year.toString();
-    var start = DateTime.parse("$year-$month-${(date - weekstart).toString()}");
-    var end = DateTime.parse("$year-$month-${(date + weekend).toString()}");
-    var finalstart = Timestamp.fromDate(start);
-    var finalend = Timestamp.fromDate(end);
+    int year = dateTime.year;
 
-    log(dayname);
+    int finaldatestart = 0;
+    String finalmonth = '';
+    int finaldateend = 0;
+    DateTime endee;
+    DateTime startdate;
+    log(date.toString());
+    log(month.toString());
+    log(year.toString());
 
-    FirebaseFirestore.instance
-        .collection("transaction")
-        .where('date', isGreaterThan: finalstart)
-        .where('date', isLessThan: finalend)
-        .orderBy('date', descending: true)
-        .snapshots()
-        .listen((event) async {
-      int totalamountexthisweek = 0;
-      for (var message in event.docs) {
-        var data =
-            await ServiceApi().getspecificcategory(id: message['category_id']);
-        if (data['type'] == 'Expense') {
-          totalamountexthisweek =
-              totalamountexthisweek + message['amount'] as int;
-          emit(QuerydatathisweekState(
-              expensetotalamountthisweek: totalamountexthisweek));
-          log('Income');
-        } else {
-          log('Income query');
-        }
+    if (month == '1') {
+      switch (date) {
+        case 1:
+          log('case 1');
+          finaldatestart = 31 - (weekstart - 1);
+          finaldateend = date - weekend;
+
+          startdate = DateTime.parse(
+              "${(year - 1).toString()}-12-${finaldatestart.toString()}");
+
+          endee = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldateend.toString()}");
+          log(endee.toString());
+
+          break;
+        case 2:
+          finaldatestart = date - weekstart;
+          finaldateend = date + weekend;
+          startdate = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldatestart.toString()}");
+          endee = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldateend.toString()}");
+
+          break;
+        case 3:
+          finaldatestart = date - weekstart;
+          finaldateend = date + weekend;
+          startdate = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldatestart.toString()}");
+          endee = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldateend.toString()}");
+
+          break;
+        case 4:
+          finaldatestart = date - weekstart;
+          finaldateend = date + weekend;
+          startdate = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldatestart.toString()}");
+          endee = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldateend.toString()}");
+
+          break;
+        case 5:
+          finaldatestart = date - weekstart;
+          finaldateend = date + weekend;
+          startdate = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldatestart.toString()}");
+          endee = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldateend.toString()}");
+
+          break;
+        case 6:
+          finaldatestart = date - weekstart;
+          finaldateend = date + weekend;
+          startdate = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldatestart.toString()}");
+          endee = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldateend.toString()}");
+
+          break;
+
+        default:
+          finaldatestart = date - weekstart;
+          finaldateend = date + weekend;
+          startdate = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldatestart.toString()}");
+          endee = DateTime.parse(
+              "${year.toString()}-0$month-0${finaldateend.toString()}");
       }
-    });
+
+      var finalstart = Timestamp.fromDate(startdate);
+      var finalend = Timestamp.fromDate(endee);
+
+      log("Start$finalstart");
+      log(finalend.toString());
+
+      FirebaseFirestore.instance
+          .collection("transaction")
+          .where('date', isGreaterThan: finalstart)
+          .where('date', isLessThan: finalend)
+          .orderBy('date', descending: true)
+          .snapshots()
+          .listen((event) async {
+        int totalamountexthisweek = 0;
+        for (var message in event.docs) {
+          var data = await ServiceApi()
+              .getspecificcategory(id: message['category_id']);
+          if (data['type'] == 'Expense') {
+            totalamountexthisweek =
+                totalamountexthisweek + message['amount'] as int;
+            emit(QuerydatathisweekState(
+                expensetotalamountthisweek: totalamountexthisweek));
+            log('Income');
+          } else {
+            log('Income query');
+          }
+        }
+      });
+    }
   }
 }

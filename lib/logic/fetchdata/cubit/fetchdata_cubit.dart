@@ -11,82 +11,63 @@ class FetchdataCubit extends Cubit<FetchdataState> {
   FetchdataCubit()
       : super(const FetchdataState(
             amount: 0,
-            categoyname: [],
-            transaction: [],
             cateogoryname_ex: [],
             transaction_ex: [],
-            expensetotalamount: 0)) {
+            expensetotalamount: 0,
+            top3categoryname: [],
+            top3transaction: [])) {
     getdatalist();
-  }
-  Future getqueryyear({required String year}) async {
-    var start = DateTime.parse("$year-01-01");
-    var end = DateTime.parse("$year-12-31");
-    var finalstart = Timestamp.fromDate(start);
-    var finalend = Timestamp.fromDate(end);
-
-    FirebaseFirestore.instance
-        .collection("expenditure")
-        .where('date', isGreaterThan: finalstart)
-        .where('date', isLessThan: finalend)
-        .orderBy('date', descending: true)
-        .snapshots();
   }
 
   Future getdatalist() async {
-    final CollectionReference expenditurelist =
-        FirebaseFirestore.instance.collection('transaction');
-
     try {
-      expenditurelist
+      int totalamount = 0;
+      int totalamountex = 0;
+      List top3transaction = [];
+      List top3categoryname = [];
+      List cateogorynameEx = [];
+      List transactionEx = [];
+      List categoryidlist = [];
+      FirebaseFirestore.instance
+          .collection('transaction')
           .orderBy('amount', descending: true)
           .snapshots()
           .listen((event) async {
-        int totalamount = 0;
-        int totalamountex = 0;
-        List<DocumentSnapshot<Object?>> cateogoryname = [];
-        List<QueryDocumentSnapshot<Object?>> transaction = [];
-        List<DocumentSnapshot<Object?>> cateogorynameEx = [];
-        List<QueryDocumentSnapshot<Object?>> transactionEx = [];
         for (var message in event.docs) {
-          transaction.add(message);
           var data = await ServiceApi()
               .getspecificcategory(id: message['category_id']);
-          cateogoryname.add(data);
-          emit(FetchdataState(
-              amount: 0,
-              transaction: transaction,
-              categoyname: cateogoryname,
-              cateogoryname_ex: const [],
-              transaction_ex: const [],
-              expensetotalamount: 0));
-          cateogoryname.add(data);
-          if (data['type'] == 'Income') {
-            totalamount = totalamount + message['amount'] as int;
-            emit(FetchdataState(
-                amount: totalamount,
-                categoyname: cateogoryname,
-                transaction: transaction,
-                cateogoryname_ex: const [],
-                transaction_ex: const [],
-                expensetotalamount: 0));
-            log('Income');
-          } else {
-            totalamount = totalamount - message['amount'] as int;
-            totalamountex = totalamountex + message['amount'] as int;
+          if (data.data() != null) {
+            if (data.data()!['type'] == 'Income') {
+              totalamount = totalamount + message['amount'] as int;
 
-            cateogorynameEx.add(data);
-            transactionEx.add(message);
-            log('Expenditure');
-            log(totalamount.toString());
-            emit(FetchdataState(
-                amount: totalamount,
-                categoyname: cateogoryname,
-                transaction: transaction,
-                cateogoryname_ex: cateogorynameEx,
-                transaction_ex: transactionEx,
-                expensetotalamount: totalamountex));
+              log('Income');
+            } else {
+              totalamount = totalamount - message['amount'] as int;
+
+              totalamountex = totalamountex + message['amount'] as int;
+              if (categoryidlist.contains(message['category_id'])) {
+                int index = categoryidlist.indexOf(message['category_id']);
+                transactionEx[index] = transactionEx[index] + message['amount'];
+              } else {
+                cateogorynameEx.add(data['name']);
+                categoryidlist.add(message['category_id']);
+                transactionEx.add(message['amount']);
+              }
+            }
           }
         }
+        top3transaction = transactionEx.sublist(0, 3);
+        top3categoryname = cateogorynameEx.sublist(0, 3);
+        log('Expenditure');
+        log(cateogorynameEx.toString());
+        log(transactionEx.toString());
+        emit(FetchdataState(
+            amount: totalamount,
+            cateogoryname_ex: cateogorynameEx,
+            transaction_ex: transactionEx,
+            expensetotalamount: totalamountex,
+            top3categoryname: top3categoryname,
+            top3transaction: top3transaction));
       });
     } catch (e) {
       return null;

@@ -2,21 +2,20 @@ part of 'fetchdata_cubit.dart';
 
 class FetchdataState extends Equatable {
   const FetchdataState(
-      {required this.expensetotalamount,
+      {required this.top3transaction,
+      required this.top3categoryname,
+      required this.expensetotalamount,
       required this.cateogoryname_ex,
       required this.transaction_ex,
-      required this.transaction,
-      required this.categoyname,
       required this.amount});
 
   final int amount;
   final int expensetotalamount;
-  final List<QueryDocumentSnapshot<Object?>> transaction;
-  final List<DocumentSnapshot<Object?>> categoyname;
-  final List<DocumentSnapshot<Object?>> cateogoryname_ex;
-  final List<QueryDocumentSnapshot<Object?>> transaction_ex;
+  final List top3transaction;
+  final List top3categoryname;
+  final List cateogoryname_ex;
+  final List transaction_ex;
 
   @override
-  List get props =>
-      [amount, transaction, categoyname, cateogoryname_ex, transaction_ex];
+  List get props => [amount, cateogoryname_ex, transaction_ex];
 }
