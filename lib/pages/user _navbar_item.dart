@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -71,9 +73,9 @@ class _NavigationPageState extends State<NavigationPage> {
                         errorFormatText: "Enter a Valid Date",
                         errorInvalidText: "Date Out of Range")
                     .then((value) {
-                  setState(() {
-                    datetime2 = Timestamp.fromDate(value!);
-                  });
+                  datetime2 = Timestamp.fromDate(value!);
+
+                  log(value.toString());
 
                   return value;
                 });
@@ -213,7 +215,7 @@ class _NavigationPageState extends State<NavigationPage> {
                                       date: datetime2 ??
                                           Timestamp.fromDate(DateTime.now()));
                                   Navigator.pop(context);
-
+                                  amountcontroller.clear();
                                   CustomSnackBar(
                                       context,
                                       const Text(
@@ -221,6 +223,8 @@ class _NavigationPageState extends State<NavigationPage> {
                                       Colors.green);
                                   setState(() {
                                     resultvalue = 'Select Category';
+
+                                    categoryid = '';
                                   });
                                 }
                               },
@@ -254,6 +258,7 @@ class _NavigationPageState extends State<NavigationPage> {
                                         padding:
                                             const EdgeInsets.only(left: 20),
                                         child: TextFormField(
+                                          keyboardType: TextInputType.number,
                                           controller: amountcontroller,
                                           decoration: InputDecoration(
                                               hintStyle: GoogleFonts.kreon(

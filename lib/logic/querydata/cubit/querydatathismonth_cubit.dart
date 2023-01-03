@@ -35,8 +35,8 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
     log(end.toString());
     FirebaseFirestore.instance
         .collection("transaction")
-        .where('date', isGreaterThan: finalstart)
-        .where('date', isLessThan: finalend)
+        .where('date', isGreaterThanOrEqualTo: finalstart)
+        .where('date', isLessThanOrEqualTo: finalend)
         .orderBy('date', descending: true)
         .snapshots()
         .listen((event) async {
@@ -50,24 +50,26 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
       for (var message in event.docs) {
         var data = await ServiceApi()
             .getspecificcategory(id: message.data()['category_id']);
-        if (data['type'] == 'Expense') {
-          totalamountexthismonth =
-              totalamountexthismonth + message['amount'] as int;
+        if (data.data() != null) {
+          if (data.data()!['type'] == 'Expense') {
+            totalamountexthismonth =
+                totalamountexthismonth + message.data()['amount'] as int;
 
-          log('Expense');
-        } else {
-          incomeamountexthismonth =
-              incomeamountexthismonth + message['amount'] as int;
+            log('Expense');
+          } else {
+            incomeamountexthismonth =
+                incomeamountexthismonth + message.data()['amount'] as int;
 
-          log('Income query');
+            log('Income query');
+          }
+          transaction.add(message.data());
+          cateogoryname.add(data.data()!['name']);
+
+          categoryidlist.add(message['category_id']);
         }
-        transaction.add(message.data());
-        cateogoryname.add(data['name']);
-
-        categoryidlist.add(message['category_id']);
       }
       var result = Map.fromIterables(categoryidlist, cateogoryname);
-      log('this month${result.toString()}');
+      log('this month${transaction.toString()}');
       for (Map element in transaction) {
         element.update('category_id', (value) => result[value]);
       }
@@ -94,6 +96,7 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
           return date2;
         }
       }));
+      log(grouptransaction.toString());
 
       grouptransaction.forEach((key, value) {
         datelist.add(key);

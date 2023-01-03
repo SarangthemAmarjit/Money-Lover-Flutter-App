@@ -379,11 +379,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             fontSize: 17,
                             color: const Color.fromARGB(255, 160, 158, 158)),
                       ),
-                      Text(
-                        'See reports',
-                        style: GoogleFonts.kreon(
-                            fontSize: 17,
-                            color: const Color.fromARGB(255, 63, 180, 67)),
+                      TextButton(
+                        onPressed: () {
+                          context.router.push(const TransactionRoute());
+                        },
+                        child: Text(
+                          'See reports',
+                          style: GoogleFonts.kreon(
+                              fontSize: 17,
+                              color: const Color.fromARGB(255, 63, 180, 67)),
+                        ),
                       )
                     ],
                   ),

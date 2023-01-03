@@ -21,23 +21,22 @@ class FetchdataCubit extends Cubit<FetchdataState> {
 
   Future getdatalist() async {
     try {
-      int totalamount = 0;
-      int totalamountex = 0;
-      List top3transaction = [];
-      List top3categoryname = [];
-      List cateogorynameEx = [];
-      List transactionEx = [];
-      List categoryidlist = [];
       FirebaseFirestore.instance
           .collection('transaction')
           .orderBy('amount', descending: true)
           .snapshots()
           .listen((event) async {
+        int totalamount = 0;
+        int totalamountex = 0;
+
+        List cateogorynameEx = [];
+        List<int> transactionEx = [];
+        List categoryidlist = [];
         for (var message in event.docs) {
-          var data = await ServiceApi()
-              .getspecificcategory(id: message['category_id']);
-          if (data.data() != null) {
-            if (data.data()!['type'] == 'Income') {
+          await ServiceApi()
+              .getspecificcategory(id: message.data()['category_id'])
+              .then((value) {
+            if (value['type'] == 'Income') {
               totalamount = totalamount + message['amount'] as int;
 
               log('Income');
@@ -47,17 +46,20 @@ class FetchdataCubit extends Cubit<FetchdataState> {
               totalamountex = totalamountex + message['amount'] as int;
               if (categoryidlist.contains(message['category_id'])) {
                 int index = categoryidlist.indexOf(message['category_id']);
-                transactionEx[index] = transactionEx[index] + message['amount'];
+                transactionEx[index] =
+                    transactionEx[index] + message['amount'] as int;
               } else {
-                cateogorynameEx.add(data['name']);
+                cateogorynameEx.add(value['name']);
                 categoryidlist.add(message['category_id']);
                 transactionEx.add(message['amount']);
               }
             }
-          }
+          }).catchError(onError);
         }
-        top3transaction = transactionEx.sublist(0, 3);
-        top3categoryname = cateogorynameEx.sublist(0, 3);
+        transactionEx.sort((b, a) => a.compareTo(b));
+        List top3transaction = transactionEx.sublist(0, 3);
+        List top3categoryname = cateogorynameEx.sublist(0, 3);
+
         log('Expenditure');
         log(cateogorynameEx.toString());
         log(transactionEx.toString());
@@ -70,7 +72,7 @@ class FetchdataCubit extends Cubit<FetchdataState> {
             top3transaction: top3transaction));
       });
     } catch (e) {
-      return null;
+      log(e.toString());
     }
   }
 }

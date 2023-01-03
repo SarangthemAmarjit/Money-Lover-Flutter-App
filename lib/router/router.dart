@@ -3,6 +3,7 @@ import 'package:moneylover/Authflow/auth_flow.dart';
 import 'package:moneylover/pages/homepage.dart';
 import 'package:moneylover/pages/loginpage.dart';
 import 'package:moneylover/pages/itemlist.dart';
+import 'package:moneylover/pages/transaction.dart';
 import 'package:moneylover/pages/user%20_navbar_item.dart';
 
 @MaterialAutoRouter(
@@ -12,9 +13,11 @@ import 'package:moneylover/pages/user%20_navbar_item.dart';
       AutoRoute(
         page: LoginPage,
       ),
-      AutoRoute(
-        page: NavigationPage,
-      ),
+      AutoRoute(page: NavigationPage, children: [
+        AutoRoute(
+          page: TransactionPage,
+        ),
+      ]),
     ]),
     AutoRoute(
       page: SelectionPage,

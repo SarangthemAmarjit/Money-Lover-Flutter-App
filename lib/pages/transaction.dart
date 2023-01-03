@@ -26,6 +26,9 @@ class _TransactionPageState extends State<TransactionPage>
   IconData? itemicon;
   Color? avatarcolor;
   Color? iconcolor;
+
+  final now = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     final s = context.watch<FetchdataCubit>().state;
@@ -149,6 +152,7 @@ class _TransactionPageState extends State<TransactionPage>
                   const Text('fdf'),
                   const Text('fdf'),
                   SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
                     child: Column(
                       children: [
                         const SizedBox(
@@ -169,7 +173,7 @@ class _TransactionPageState extends State<TransactionPage>
                                 style: GoogleFonts.kreon(
                                     fontSize: 18,
                                     color: const Color.fromARGB(
-                                        255, 97, 172, 197)),
+                                        255, 74, 198, 239)),
                               )
                             ],
                           ),
@@ -217,6 +221,27 @@ class _TransactionPageState extends State<TransactionPage>
                             ],
                           ),
                         ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: const Color.fromARGB(255, 236, 246, 236)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 14, right: 14, top: 10, bottom: 10),
+                            child: Text(
+                              'View report for this period',
+                              style: GoogleFonts.kreon(
+                                  color: const Color.fromARGB(255, 75, 174, 78),
+                                  fontSize: 16),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
                         Container(
                           color: const Color.fromARGB(255, 243, 241, 241),
                           width: MediaQuery.of(context).size.width,
@@ -228,9 +253,28 @@ class _TransactionPageState extends State<TransactionPage>
                             shrinkWrap: true,
                             itemBuilder: ((context, index1) {
                               String date = datelist[index1];
+                              DateTime checkingdate = DateTime.parse(date);
+                              final aDate = DateTime(checkingdate.year,
+                                  checkingdate.month, checkingdate.day);
+
                               var datetime = DateTime.parse(date);
-                              var datefinal =
-                                  DateFormat.yMMMd().format(datetime);
+                              var monthyear =
+                                  DateFormat.yMMMM().format(datetime);
+                              var day = DateFormat('EEEE').format(datetime);
+                              var dateonly = DateFormat.d().format(datetime);
+                              final today =
+                                  DateTime(now.year, now.month, now.day);
+                              final yesterday =
+                                  DateTime(now.year, now.month, now.day - 1);
+                              final tomorrow =
+                                  DateTime(now.year, now.month, now.day + 1);
+                              if (aDate == today) {
+                                day = 'Today';
+                              } else if (aDate == yesterday) {
+                                day = 'Yesterday';
+                              } else if (aDate == tomorrow) {
+                                day = 'Tomorrow';
+                              } else {}
                               int totalamountthismonth = incomeamountthismonth +
                                   expenseamountthismonth;
                               log(totalamountthismonth.toString());
@@ -254,9 +298,32 @@ class _TransactionPageState extends State<TransactionPage>
                                         style: GoogleFonts.kreon(fontSize: 18),
                                       ),
                                       tileColor: Colors.white,
-                                      title: Text(
-                                        datefinal.toString(),
-                                        style: GoogleFonts.kreon(fontSize: 18),
+                                      title: Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 14),
+                                            child: Text(
+                                              dateonly.length < 2
+                                                  ? '0$dateonly'
+                                                  : dateonly,
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 38),
+                                            ),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(day),
+                                              Text(
+                                                monthyear.toString(),
+                                                style: GoogleFonts.kreon(
+                                                    color: Colors.grey),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
                                       ),
                                     ),
                                     Padding(
@@ -349,7 +416,7 @@ class _TransactionPageState extends State<TransactionPage>
                                                               ['category_id'] ==
                                                           'Salary'
                                                       ? const Color.fromARGB(
-                                                          255, 109, 185, 211)
+                                                          255, 74, 198, 239)
                                                       : Colors.red),
                                             ),
                                             title: Text(
