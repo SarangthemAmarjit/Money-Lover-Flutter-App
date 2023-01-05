@@ -381,7 +381,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                       TextButton(
                         onPressed: () {
-                          context.router.push(const TransactionRoute());
+                          context.router.push(const GroupTab6Router());
                         },
                         child: Text(
                           'See reports',
@@ -706,54 +706,64 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 10),
-                                    child: ListTile(
-                                      leading: Stack(
-                                        alignment: Alignment.bottomRight,
-                                        children: [
-                                          CircleAvatar(
-                                              backgroundColor: avatarcolor,
-                                              radius: 18,
-                                              child: FaIcon(itemicon,
-                                                  color: iconcolor)),
-                                          const CircleAvatar(
-                                              backgroundColor: Color.fromARGB(
-                                                  255, 43, 56, 96),
-                                              radius: 6,
-                                              child: FaIcon(
-                                                FontAwesomeIcons.wallet,
-                                                size: 8,
-                                                color: Color.fromARGB(
-                                                    255, 248, 135, 79),
-                                              )),
-                                        ],
-                                      ),
-                                      title: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            cateogoryname[index],
-                                            style:
-                                                GoogleFonts.kreon(fontSize: 18),
-                                          ),
-                                          Text(
-                                            datefinal.toString(),
-                                            style: GoogleFonts.kreon(
-                                                fontSize: 15,
-                                                color: Colors.grey),
-                                          )
-                                        ],
-                                      ),
-                                      trailing: Text(
-                                        currencyformat.format(
-                                            transaction2[index]['amount']),
-                                        style: GoogleFonts.kreon(
-                                            fontSize: 18,
-                                            color: cateogoryname2[index] ==
-                                                    'Salary'
-                                                ? const Color.fromARGB(
-                                                    255, 72, 215, 247)
-                                                : Colors.red),
+                                    child: InkWell(
+                                      onTap: () {
+                                        context.router.push(DetailRoute(
+                                            amount: transaction2[index]
+                                                ['amount'],
+                                            date: datetime,
+                                            categoryname:
+                                                cateogoryname2[index]));
+                                      },
+                                      child: ListTile(
+                                        leading: Stack(
+                                          alignment: Alignment.bottomRight,
+                                          children: [
+                                            CircleAvatar(
+                                                backgroundColor: avatarcolor,
+                                                radius: 18,
+                                                child: FaIcon(itemicon,
+                                                    color: iconcolor)),
+                                            const CircleAvatar(
+                                                backgroundColor: Color.fromARGB(
+                                                    255, 43, 56, 96),
+                                                radius: 6,
+                                                child: FaIcon(
+                                                  FontAwesomeIcons.wallet,
+                                                  size: 8,
+                                                  color: Color.fromARGB(
+                                                      255, 248, 135, 79),
+                                                )),
+                                          ],
+                                        ),
+                                        title: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              cateogoryname[index],
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 18),
+                                            ),
+                                            Text(
+                                              datefinal.toString(),
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 15,
+                                                  color: Colors.grey),
+                                            )
+                                          ],
+                                        ),
+                                        trailing: Text(
+                                          currencyformat.format(
+                                              transaction2[index]['amount']),
+                                          style: GoogleFonts.kreon(
+                                              fontSize: 18,
+                                              color: cateogoryname2[index] ==
+                                                      'Salary'
+                                                  ? const Color.fromARGB(
+                                                      255, 72, 215, 247)
+                                                  : Colors.red),
+                                        ),
                                       ),
                                     ),
                                   );

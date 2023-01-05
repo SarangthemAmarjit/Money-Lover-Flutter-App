@@ -8,11 +8,11 @@ class QuerydatathismonthState extends Equatable {
     required this.categoryidlist,
     required this.datelist,
     required this.expensetotalamountthismonth,
-    required this.incometotalamountlastmonth,
+    required this.incometotalamountthismonth,
   });
 
   final int expensetotalamountthismonth;
-  final int incometotalamountlastmonth;
+  final int incometotalamountthismonth;
   final List transaction;
   final List categoyname;
 
@@ -21,5 +21,5 @@ class QuerydatathismonthState extends Equatable {
   final List datelist;
 
   @override
-  List get props => [expensetotalamountthismonth, incometotalamountlastmonth];
+  List get props => [expensetotalamountthismonth, incometotalamountthismonth];
 }

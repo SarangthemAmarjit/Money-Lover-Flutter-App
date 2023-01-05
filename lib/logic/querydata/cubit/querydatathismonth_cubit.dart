@@ -11,7 +11,7 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
   QuerydatathismonthCubit()
       : super(const QuerydatathismonthState(
             expensetotalamountthismonth: 0,
-            incometotalamountlastmonth: 0,
+            incometotalamountthismonth: 0,
             categoryidlist: [],
             categoyname: [],
             datelist: [],
@@ -108,7 +108,7 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
         grouptransaction: grouptransaction,
         datelist: datelist,
         expensetotalamountthismonth: totalamountexthismonth,
-        incometotalamountlastmonth: incomeamountexthismonth,
+        incometotalamountthismonth: incomeamountexthismonth,
       ));
     });
   }
