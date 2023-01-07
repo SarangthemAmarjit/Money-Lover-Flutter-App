@@ -44,6 +44,21 @@ class ServiceApi {
     });
   }
 
+  Future updatetransaction({
+    required String id,
+    required int amount,
+    required String categoryid,
+    required String notes,
+    required Timestamp date,
+  }) async {
+    return await transaction.doc(id).update({
+      'amount': amount,
+      'category_id': categoryid,
+      'date': date,
+      'note': notes
+    });
+  }
+
   Future getdocumentid() async {
     List idlist = [];
 
@@ -79,9 +94,9 @@ class ServiceApi {
     return await category.doc(id).get();
   }
 
-  Future deleteexpenditureitem({
+  Future deletetransaction({
     required String id,
   }) async {
-    return await category.doc(id).delete();
+    return await transaction.doc(id).delete();
   }
 }

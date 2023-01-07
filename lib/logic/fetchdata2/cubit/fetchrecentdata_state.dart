@@ -2,8 +2,7 @@ part of 'fetchrecentdata_cubit.dart';
 
 class FetchrecentdataState extends Equatable {
   const FetchrecentdataState({
-    required this.datelist,
-    required this.grouptransaction,
+    required this.transactionidlist,
     required this.categoryidlist,
     required this.transaction2,
     required this.categoyname2,
@@ -15,9 +14,10 @@ class FetchrecentdataState extends Equatable {
   final List categoyname;
   final List transaction2;
   final List categoyname2;
-  final Map<String, List<dynamic>> grouptransaction;
+
   final List categoryidlist;
-  final List datelist;
+
+  final List transactionidlist;
 
   @override
   List get props => [
@@ -26,6 +26,5 @@ class FetchrecentdataState extends Equatable {
         categoyname2,
         transaction2,
         categoryidlist,
-        grouptransaction
       ];
 }

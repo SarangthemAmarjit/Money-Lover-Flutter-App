@@ -12,6 +12,8 @@ import 'package:moneylover/logic/querydata/cubit/querydatathismonth_cubit.dart';
 import 'package:moneylover/logic/querydatalastmonth/cubit/querydatalastmonth_cubit.dart';
 import 'package:moneylover/logic/querydatalastweek/cubit/querydatalastweek_cubit.dart';
 import 'package:moneylover/logic/querydatathisweek/cubit/querydatathisweek_cubit.dart';
+import 'package:moneylover/pages/detailpage.dart';
+import 'package:moneylover/pages/transaction.dart';
 import 'package:moneylover/refactor/plotchart.dart';
 import 'package:moneylover/router/router.gr.dart';
 import 'package:moneylover/services/auth.dart';
@@ -49,6 +51,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     List cateogoryname2 = recent.categoyname2;
     List transaction = recent.transaction;
     List transaction2 = recent.transaction2;
+    List transactionidlist = recent.transactionidlist;
+
     List cateogorynameEx = s.top3categoryname;
     List transactionEx = s.top3transaction;
     int expensetotalamount = s.expensetotalamount;
@@ -380,9 +384,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             color: const Color.fromARGB(255, 160, 158, 158)),
                       ),
                       TextButton(
-                        onPressed: () {
-                          context.router.push(const GroupTab6Router());
-                        },
+                        onPressed: (() {}),
                         child: Text(
                           'See reports',
                           style: GoogleFonts.kreon(
@@ -625,6 +627,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        'assets/images/adds.jpg',
+                      )),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(left: 26, right: 26, top: 20),
                   child: Row(
@@ -636,11 +649,17 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             fontSize: 17,
                             color: const Color.fromARGB(255, 160, 158, 158)),
                       ),
-                      Text(
-                        'See all',
-                        style: GoogleFonts.kreon(
-                            fontSize: 17,
-                            color: const Color.fromARGB(255, 63, 180, 67)),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: ((context) => const TransactionPage())));
+                        },
+                        child: Text(
+                          'See all',
+                          style: GoogleFonts.kreon(
+                              fontSize: 17,
+                              color: const Color.fromARGB(255, 63, 180, 67)),
+                        ),
                       )
                     ],
                   ),
@@ -708,12 +727,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                         horizontal: 10),
                                     child: InkWell(
                                       onTap: () {
-                                        context.router.push(DetailRoute(
-                                            amount: transaction2[index]
-                                                ['amount'],
-                                            date: datetime,
-                                            categoryname:
-                                                cateogoryname2[index]));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailPage(
+                                                        amount:
+                                                            transaction2[index]
+                                                                ['amount'],
+                                                        date: datetime,
+                                                        categoryname:
+                                                            cateogoryname2[
+                                                                index],
+                                                        categoryid:
+                                                            transaction2[index]
+                                                                ['category_id'],
+                                                        transactionid:
+                                                            transactionidlist[
+                                                                index]),
+                                                settings: const RouteSettings(
+                                                    name: "/detail")));
                                       },
                                       child: ListTile(
                                         leading: Stack(

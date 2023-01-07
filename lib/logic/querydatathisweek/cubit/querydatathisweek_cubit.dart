@@ -127,14 +127,16 @@ class QuerydatathisweekCubit extends Cubit<QuerydatathisweekState> {
         for (var message in event.docs) {
           var data = await ServiceApi()
               .getspecificcategory(id: message['category_id']);
-          if (data['type'] == 'Expense') {
-            totalamountexthisweek =
-                totalamountexthisweek + message['amount'] as int;
-            emit(QuerydatathisweekState(
-                expensetotalamountthisweek: totalamountexthisweek));
-            log('Income');
-          } else {
-            log('Income query');
+          if (data.data() != null) {
+            if (data.data()!['type'] == 'Expense') {
+              totalamountexthisweek =
+                  totalamountexthisweek + message['amount'] as int;
+              emit(QuerydatathisweekState(
+                  expensetotalamountthisweek: totalamountexthisweek));
+              log('Income');
+            } else {
+              log('Income query');
+            }
           }
         }
       });

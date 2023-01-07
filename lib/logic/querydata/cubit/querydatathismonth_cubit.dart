@@ -16,7 +16,8 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
             categoyname: [],
             datelist: [],
             grouptransaction: {},
-            transaction: [])) {
+            transaction: [],
+            transactionidlist: [])) {
     getthismonthquery();
   }
   Future getthismonthquery() async {
@@ -47,6 +48,7 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
       List categoryidlist = [];
       int totalamountexthismonth = 0;
       int incomeamountexthismonth = 0;
+      List transactionidlist = [];
       for (var message in event.docs) {
         var data = await ServiceApi()
             .getspecificcategory(id: message.data()['category_id']);
@@ -62,12 +64,25 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
 
             log('Income query');
           }
+          message.data().addAll({"transaction_id": message.id});
+          transactionidlist.add(message.id);
           transaction.add(message.data());
           cateogoryname.add(data.data()!['name']);
 
           categoryidlist.add(message['category_id']);
         }
       }
+
+      int i;
+      int j;
+
+      for (j = 0; j < transaction.length; j++) {
+        for (i = 0; i < transactionidlist.length; i++) {
+          transaction[j]['transaction_id'] = transactionidlist[i];
+          j++;
+        }
+      }
+
       var result = Map.fromIterables(categoryidlist, cateogoryname);
       log('this month${transaction.toString()}');
       for (Map element in transaction) {
@@ -109,6 +124,7 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
         datelist: datelist,
         expensetotalamountthismonth: totalamountexthismonth,
         incometotalamountthismonth: incomeamountexthismonth,
+        transactionidlist: transactionidlist,
       ));
     });
   }

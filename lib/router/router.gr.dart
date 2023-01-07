@@ -54,6 +54,8 @@ class AppRouter extends _i13.RootStackRouter {
           categoryname: args.categoryname,
           amount: args.amount,
           date: args.date,
+          transactionid: args.transactionid,
+          categoryid: args.categoryid,
         ),
       );
     },
@@ -329,6 +331,8 @@ class DetailRoute extends _i13.PageRouteInfo<DetailRouteArgs> {
     required String categoryname,
     required int amount,
     required DateTime date,
+    required String transactionid,
+    required String categoryid,
   }) : super(
           DetailRoute.name,
           path: '/detail-page',
@@ -337,6 +341,8 @@ class DetailRoute extends _i13.PageRouteInfo<DetailRouteArgs> {
             categoryname: categoryname,
             amount: amount,
             date: date,
+            transactionid: transactionid,
+            categoryid: categoryid,
           ),
         );
 
@@ -349,6 +355,8 @@ class DetailRouteArgs {
     required this.categoryname,
     required this.amount,
     required this.date,
+    required this.transactionid,
+    required this.categoryid,
   });
 
   final _i14.Key? key;
@@ -359,9 +367,13 @@ class DetailRouteArgs {
 
   final DateTime date;
 
+  final String transactionid;
+
+  final String categoryid;
+
   @override
   String toString() {
-    return 'DetailRouteArgs{key: $key, categoryname: $categoryname, amount: $amount, date: $date}';
+    return 'DetailRouteArgs{key: $key, categoryname: $categoryname, amount: $amount, date: $date, transactionid: $transactionid, categoryid: $categoryid}';
   }
 }
 

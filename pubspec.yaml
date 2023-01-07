@@ -55,6 +55,7 @@ dependencies:
   cloud_firestore: ^4.3.0
   bubble_tab_indicator: ^0.1.6
   syncfusion_flutter_charts: ^20.4.38
+  flutterfire_ui: ^0.4.3+20
   
 
 dev_dependencies:

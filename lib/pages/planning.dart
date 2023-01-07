@@ -11,7 +11,7 @@ class PlanningPage extends StatelessWidget {
           SizedBox(
             height: 50,
           ),
-          Text('Add Amount')
+          Text('Planning Page')
         ],
       ),
     );

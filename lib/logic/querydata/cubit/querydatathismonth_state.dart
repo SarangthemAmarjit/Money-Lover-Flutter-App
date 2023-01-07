@@ -2,6 +2,7 @@ part of 'querydatathismonth_cubit.dart';
 
 class QuerydatathismonthState extends Equatable {
   const QuerydatathismonthState({
+    required this.transactionidlist,
     required this.transaction,
     required this.categoyname,
     required this.grouptransaction,
@@ -15,7 +16,7 @@ class QuerydatathismonthState extends Equatable {
   final int incometotalamountthismonth;
   final List transaction;
   final List categoyname;
-
+  final List transactionidlist;
   final Map<String, List<dynamic>> grouptransaction;
   final List categoryidlist;
   final List datelist;

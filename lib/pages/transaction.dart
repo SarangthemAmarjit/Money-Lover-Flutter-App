@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +31,8 @@ class _TransactionPageState extends State<TransactionPage>
     int totalamount = s.amount;
 
     //thismonth transaction
+    List categoryidlist = thismonth.categoryidlist;
+    List transactionidlist = thismonth.transactionidlist;
     List datelistthismonth = thismonth.datelist;
     int incomeamountthismonth = thismonth.incometotalamountthismonth;
     int expenseamountthismonth = thismonth.expensetotalamountthismonth;
@@ -40,12 +44,13 @@ class _TransactionPageState extends State<TransactionPage>
     int expenseamountlastmonth = lastmonth.expensetotalamountlastmonth;
     Map<String, List<dynamic>> grouptransactionlastmonth =
         lastmonth.grouptransaction;
+    log(transactionidlist.toString());
 
     TabController tabController = TabController(
-        initialIndex: 10,
-        length: 12,
-        vsync: this,
-        animationDuration: Duration.zero);
+      initialIndex: 10,
+      length: 12,
+      vsync: this,
+    );
     return Scaffold(
       body: SafeArea(
           child: Center(
@@ -87,7 +92,6 @@ class _TransactionPageState extends State<TransactionPage>
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: TabBar(
-                          onTap: (value) {},
                           physics: const BouncingScrollPhysics(),
                           isScrollable: true,
                           indicatorSize: TabBarIndicatorSize.tab,
@@ -105,15 +109,15 @@ class _TransactionPageState extends State<TransactionPage>
                           controller: tabController,
                           automaticIndicatorColorAdjustment: true,
                           tabs: const [
-                            Tab(text: "Week"),
-                            Tab(text: "Month"),
-                            Tab(text: "Week"),
-                            Tab(text: "Month"),
-                            Tab(text: "Week"),
-                            Tab(text: "Month"),
-                            Tab(text: "Week"),
-                            Tab(text: "Month"),
-                            Tab(text: "Week"),
+                            Tab(text: "03/2022"),
+                            Tab(text: "04/2022"),
+                            Tab(text: "05/2022"),
+                            Tab(text: "06/2022"),
+                            Tab(text: "07/2022"),
+                            Tab(text: "08/2022"),
+                            Tab(text: "09/2022"),
+                            Tab(text: "10/2022"),
+                            Tab(text: "11/2022"),
                             Tab(text: "LAST MONTH"),
                             Tab(text: "THIS MONTH"),
                             Tab(text: "FUTURE")
@@ -139,15 +143,21 @@ class _TransactionPageState extends State<TransactionPage>
                   const Text('fdf'),
                   const Text('fdf'),
                   TabbartransactionPage(
-                      incomeamount: incomeamountlastmonth,
-                      expenseamount: expenseamountlastmonth,
-                      grouptransaction: grouptransactionlastmonth,
-                      datelist: datelistlastmonth),
+                    incomeamount: incomeamountlastmonth,
+                    expenseamount: expenseamountlastmonth,
+                    grouptransaction: grouptransactionlastmonth,
+                    datelist: datelistlastmonth,
+                    categoryidlist: const [],
+                    transactionidlist: const [],
+                  ),
                   TabbartransactionPage(
-                      incomeamount: incomeamountthismonth,
-                      expenseamount: expenseamountthismonth,
-                      grouptransaction: grouptransactionthismonth,
-                      datelist: datelistthismonth),
+                    incomeamount: incomeamountthismonth,
+                    expenseamount: expenseamountthismonth,
+                    grouptransaction: grouptransactionthismonth,
+                    datelist: datelistthismonth,
+                    categoryidlist: categoryidlist,
+                    transactionidlist: transactionidlist,
+                  ),
                   const Text('fdf'),
                 ]),
               ),

@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -12,6 +13,8 @@ import 'package:moneylover/router/router.gr.dart';
 import 'package:moneylover/services/serviceapi.dart';
 
 class DetailPage extends StatefulWidget {
+  final String transactionid;
+  final String categoryid;
   final String categoryname;
   final int amount;
   final DateTime date;
@@ -19,7 +22,9 @@ class DetailPage extends StatefulWidget {
       {super.key,
       required this.categoryname,
       required this.amount,
-      required this.date});
+      required this.date,
+      required this.transactionid,
+      required this.categoryid});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -44,6 +49,7 @@ class _DetailPageState extends State<DetailPage> {
   var format = DateFormat("dd-MM-yyyy");
   DateTime? initialdate = DateTime(2010);
   Timestamp? datetime2;
+  String datetimefordisplay = 'Today';
 
   Future<void> _navigateAndDisplaySelection(BuildContext context) async {
     // Navigator.push returns a Future that completes after calling
@@ -80,15 +86,14 @@ class _DetailPageState extends State<DetailPage> {
             padding: const EdgeInsets.only(bottom: 10),
             child: DateTimeField(
               decoration: InputDecoration(
-                hintText: 'Today',
-                hintStyle:
-                    GoogleFonts.kreon(color: Colors.black26, fontSize: 18),
+                hintText: datetimefordisplay,
+                hintStyle: GoogleFonts.kreon(color: Colors.black, fontSize: 18),
               ),
               format: format,
               onShowPicker: (context, currentValue) {
                 return showDatePicker(
                         context: context,
-                        initialDate: DateTime.now(),
+                        initialDate: widget.date,
                         firstDate: DateTime(2010),
                         lastDate: DateTime(2025),
                         helpText: "SELECT DATE OF BIRTH",
@@ -171,10 +176,18 @@ class _DetailPageState extends State<DetailPage> {
                         children: [
                           InkWell(
                             onTap: () {
+                              setState(() {
+                                amountcontroller.text =
+                                    widget.amount.toString();
+                                resultvalue = widget.categoryname;
+                                datetimefordisplay =
+                                    '${widget.date.day}-${widget.date.month}-${widget.date.year}';
+                                categoryid = widget.categoryid;
+                              });
                               showModalBottomSheet<void>(
                                 isScrollControlled: true,
                                 context: context,
-                                builder: (BuildContext context) {
+                                builder: (BuildContext context2) {
                                   return Scaffold(
                                     backgroundColor:
                                         const Color.fromARGB(26, 250, 250, 250),
@@ -209,7 +222,7 @@ class _DetailPageState extends State<DetailPage> {
                                                 padding: const EdgeInsets.only(
                                                     left: 15),
                                                 child: Text(
-                                                  'Add Transaction',
+                                                  'Edit Transaction',
                                                   style: GoogleFonts.kreon(
                                                       fontSize: 20),
                                                 ),
@@ -230,10 +243,11 @@ class _DetailPageState extends State<DetailPage> {
                                                         Colors.red);
                                                   } else {
                                                     await ServiceApi()
-                                                        .addtransaction(
-                                                            amount: int.parse(
-                                                                amountcontroller
-                                                                    .text),
+                                                        .updatetransaction(
+                                                            amount:
+                                                                int.parse(
+                                                                    amountcontroller
+                                                                        .text),
                                                             categoryid:
                                                                 categoryid,
                                                             notes:
@@ -241,13 +255,16 @@ class _DetailPageState extends State<DetailPage> {
                                                                     .text,
                                                             date: Timestamp
                                                                 .fromDate(widget
-                                                                    .date));
+                                                                    .date),
+                                                            id: widget
+                                                                .transactionid);
+                                                    Navigator.pop(context2);
                                                     Navigator.pop(context);
                                                     amountcontroller.clear();
                                                     CustomSnackBar(
                                                         context,
                                                         const Text(
-                                                            'Added Transaction Successfully'),
+                                                            'Updated Transaction Successfully'),
                                                         Colors.green);
                                                     setState(() {
                                                       resultvalue =
@@ -435,9 +452,79 @@ class _DetailPageState extends State<DetailPage> {
                           const SizedBox(
                             width: 25,
                           ),
-                          const Icon(
-                            Icons.delete,
-                            color: Colors.black,
+                          InkWell(
+                            onTap: () {
+                              showModalBottomSheet(
+                                  anchorPoint: Offset.fromDirection(1),
+                                  constraints:
+                                      const BoxConstraints(maxHeight: 100),
+                                  context: context,
+                                  builder: ((context) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, right: 10, top: 10),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Delete this transaction?',
+                                              style: GoogleFonts.kreon(
+                                                  fontSize: 20)),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              ElevatedButton(
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.grey,
+                                                    side: const BorderSide(
+                                                        color: Colors.red),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text(
+                                                    "CANCEL",
+                                                    style: GoogleFonts.kreon(),
+                                                  )),
+                                              Padding(
+                                                padding: const EdgeInsets.only(
+                                                    left: 10),
+                                                child: ElevatedButton(
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            backgroundColor:
+                                                                Colors.green),
+                                                    onPressed: () async {
+                                                      EasyLoading.show(
+                                                          status: 'Deleting..');
+                                                      await ServiceApi()
+                                                          .deletetransaction(
+                                                              id: widget
+                                                                  .transactionid)
+                                                          .whenComplete(() {
+                                                        EasyLoading.dismiss();
+                                                        Navigator.pop(context);
+                                                        Navigator.pop(context);
+                                                      });
+                                                    },
+                                                    child: Text("YES",
+                                                        style: GoogleFonts
+                                                            .kreon())),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }));
+                            },
+                            child: const Icon(
+                              Icons.delete,
+                              color: Colors.black,
+                            ),
                           )
                         ],
                       )

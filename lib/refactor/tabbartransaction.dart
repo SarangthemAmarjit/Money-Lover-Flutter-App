@@ -4,22 +4,27 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:moneylover/pages/detailpage.dart';
 
 class TabbartransactionPage extends StatelessWidget {
   final int incomeamount;
   final int expenseamount;
   final Map<String, List<dynamic>> grouptransaction;
   final List datelist;
+  final List categoryidlist;
+  final List transactionidlist;
 
   TabbartransactionPage(
       {super.key,
       required this.incomeamount,
       required this.expenseamount,
       required this.grouptransaction,
-      required this.datelist});
+      required this.datelist,
+      required this.categoryidlist,
+      required this.transactionidlist});
 
   var currencyformat =
-      NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
+      NumberFormat.currency(locale: 'en_IN', symbol: '', decimalDigits: 0);
 
   IconData? itemicon;
   Color? avatarcolor;
@@ -234,42 +239,59 @@ class TabbartransactionPage extends StatelessWidget {
                                     const Color.fromARGB(255, 209, 54, 244);
                                 itemicon = FontAwesomeIcons.fileInvoiceDollar;
                             }
-                            return ListTile(
-                              leading: Stack(
-                                alignment: Alignment.bottomRight,
-                                children: [
-                                  CircleAvatar(
-                                      backgroundColor: avatarcolor,
-                                      radius: 18,
-                                      child:
-                                          FaIcon(itemicon, color: iconcolor)),
-                                  const CircleAvatar(
-                                      backgroundColor:
-                                          Color.fromARGB(255, 43, 56, 96),
-                                      radius: 6,
-                                      child: FaIcon(
-                                        FontAwesomeIcons.wallet,
-                                        size: 8,
-                                        color:
-                                            Color.fromARGB(255, 248, 135, 79),
-                                      )),
-                                ],
+                            return InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: ((context) => DetailPage(
+                                        amount: grouptransaction[date]![index2]
+                                            ['amount'],
+                                        date: datetime,
+                                        categoryname:
+                                            grouptransaction[date]![index2]
+                                                ['category_id'],
+                                        categoryid: categoryidlist[index2],
+                                        transactionid:
+                                            grouptransaction[date]![index2]
+                                                ['transaction_id']))));
+                              },
+                              child: ListTile(
+                                leading: Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    CircleAvatar(
+                                        backgroundColor: avatarcolor,
+                                        radius: 18,
+                                        child:
+                                            FaIcon(itemicon, color: iconcolor)),
+                                    const CircleAvatar(
+                                        backgroundColor:
+                                            Color.fromARGB(255, 43, 56, 96),
+                                        radius: 6,
+                                        child: FaIcon(
+                                          FontAwesomeIcons.wallet,
+                                          size: 8,
+                                          color:
+                                              Color.fromARGB(255, 248, 135, 79),
+                                        )),
+                                  ],
+                                ),
+                                trailing: Text(
+                                  currencyformat.format(
+                                      grouptransaction[date]![index2]
+                                          ['amount']),
+                                  style: GoogleFonts.kreon(
+                                      fontSize: 18,
+                                      color: grouptransaction[date]![index2]
+                                                  ['category_id'] ==
+                                              'Salary'
+                                          ? const Color.fromARGB(
+                                              255, 74, 198, 239)
+                                          : Colors.red),
+                                ),
+                                title: Text(grouptransaction[date]![index2]
+                                        ['category_id']
+                                    .toString()),
                               ),
-                              trailing: Text(
-                                currencyformat.format(
-                                    grouptransaction[date]![index2]['amount']),
-                                style: GoogleFonts.kreon(
-                                    fontSize: 18,
-                                    color: grouptransaction[date]![index2]
-                                                ['category_id'] ==
-                                            'Salary'
-                                        ? const Color.fromARGB(
-                                            255, 74, 198, 239)
-                                        : Colors.red),
-                              ),
-                              title: Text(grouptransaction[date]![index2]
-                                      ['category_id']
-                                  .toString()),
                             );
                           }))
                     ],
