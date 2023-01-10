@@ -104,10 +104,35 @@ class QuerydatathisweekCubit extends Cubit<QuerydatathisweekState> {
         default:
           finaldatestart = date - weekstart;
           finaldateend = date + weekend;
-          startdate = DateTime.parse(
-              "${year.toString()}-0$month-0${finaldatestart.toString()}");
-          endee = DateTime.parse(
-              "${year.toString()}-0$month-0${finaldateend.toString()}");
+
+          //start date
+          if (month.length < 2 && finaldatestart.toString().length < 2) {
+            startdate = DateTime.parse(
+                "${year.toString()}-0$month-0${finaldatestart.toString()}");
+          } else if (month.length < 2) {
+            startdate = DateTime.parse(
+                "${year.toString()}-0$month-${finaldatestart.toString()}");
+          } else if (finaldatestart.toString().length < 2) {
+            startdate = DateTime.parse(
+                "${year.toString()}-$month-0${finaldatestart.toString()}");
+          } else {
+            startdate = DateTime.parse(
+                "${year.toString()}-$month-${finaldatestart.toString()}");
+          }
+          //end date
+          if (month.length < 2 && finaldateend.toString().length < 2) {
+            endee = DateTime.parse(
+                "${year.toString()}-0$month-0${finaldateend.toString()}");
+          } else if (month.length < 2) {
+            endee = DateTime.parse(
+                "${year.toString()}-0$month-${finaldateend.toString()}");
+          } else if (finaldateend.toString().length < 2) {
+            endee = DateTime.parse(
+                "${year.toString()}-$month-0${finaldateend.toString()}");
+          } else {
+            endee = DateTime.parse(
+                "${year.toString()}-$month-${finaldateend.toString()}");
+          }
       }
 
       var finalstart = Timestamp.fromDate(startdate);

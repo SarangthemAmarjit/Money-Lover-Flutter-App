@@ -12,8 +12,8 @@ import 'package:moneylover/logic/querydata/cubit/querydatathismonth_cubit.dart';
 import 'package:moneylover/logic/querydatalastmonth/cubit/querydatalastmonth_cubit.dart';
 import 'package:moneylover/logic/querydatalastweek/cubit/querydatalastweek_cubit.dart';
 import 'package:moneylover/logic/querydatathisweek/cubit/querydatathisweek_cubit.dart';
+import 'package:moneylover/pages/allrecentpage.dart';
 import 'package:moneylover/pages/detailpage.dart';
-import 'package:moneylover/pages/transaction.dart';
 import 'package:moneylover/refactor/plotchart.dart';
 import 'package:moneylover/router/router.gr.dart';
 import 'package:moneylover/services/auth.dart';
@@ -29,8 +29,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  final CollectionReference transaction =
-      FirebaseFirestore.instance.collection('transaction');
   var currencyformat =
       NumberFormat.currency(locale: 'en_IN', symbol: '₹', decimalDigits: 0);
 
@@ -38,6 +36,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Color? avatarcolor;
   Color? iconcolor;
 
+  @override
   @override
   Widget build(BuildContext context) {
     final s = context.watch<FetchdataCubit>().state;
@@ -369,11 +368,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 30,
-                ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 26),
+                  padding: const EdgeInsets.only(
+                    left: 24,
+                    right: 20,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -396,7 +395,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Card(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -627,11 +626,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22),
+                  padding: const EdgeInsets.only(left: 22, right: 22, top: 30),
                   child: ClipRRect(
                       borderRadius: BorderRadius.circular(10),
                       child: Image.asset(
@@ -639,7 +635,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       )),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 26, right: 26, top: 20),
+                  padding: const EdgeInsets.only(
+                    left: 26,
+                    right: 26,
+                  ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -652,7 +651,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: ((context) => const TransactionPage())));
+                              builder: ((context) => const AllrecentPage())));
                         },
                         child: Text(
                           'See all',
@@ -665,7 +664,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Card(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
@@ -678,11 +677,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           Padding(
                             padding: const EdgeInsets.only(top: 15, bottom: 20),
                             child: ListView.builder(
-                                physics: const BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: cateogoryname2.length,
                                 itemBuilder: ((context, index) {
-                                  Timestamp date = transaction2[index]['date'];
+                                  Timestamp date = transaction[index]['date'];
                                   var datetime = date.toDate();
                                   var datefinal =
                                       DateFormat.yMMMd().format(datetime);
@@ -774,7 +772,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Text(
-                                              cateogoryname[index],
+                                              cateogoryname2[index],
                                               style: GoogleFonts.kreon(
                                                   fontSize: 18),
                                             ),

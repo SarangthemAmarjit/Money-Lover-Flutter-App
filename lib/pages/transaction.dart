@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bubble_tab_indicator/bubble_tab_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,8 +29,8 @@ class _TransactionPageState extends State<TransactionPage>
     int totalamount = s.amount;
 
     //thismonth transaction
-    List categoryidlist = thismonth.categoryidlist;
-    List transactionidlist = thismonth.transactionidlist;
+    List categoryidlistthismonth = thismonth.categoryidlist;
+
     List datelistthismonth = thismonth.datelist;
     int incomeamountthismonth = thismonth.incometotalamountthismonth;
     int expenseamountthismonth = thismonth.expensetotalamountthismonth;
@@ -40,11 +38,11 @@ class _TransactionPageState extends State<TransactionPage>
         thismonth.grouptransaction;
     //last month transaction
     List datelistlastmonth = lastmonth.datelist;
+    List categoryidlistlastsmonth = lastmonth.categoryidlist;
     int incomeamountlastmonth = lastmonth.incometotalamountlastmonth;
     int expenseamountlastmonth = lastmonth.expensetotalamountlastmonth;
     Map<String, List<dynamic>> grouptransactionlastmonth =
         lastmonth.grouptransaction;
-    log(transactionidlist.toString());
 
     TabController tabController = TabController(
       initialIndex: 10,
@@ -147,16 +145,14 @@ class _TransactionPageState extends State<TransactionPage>
                     expenseamount: expenseamountlastmonth,
                     grouptransaction: grouptransactionlastmonth,
                     datelist: datelistlastmonth,
-                    categoryidlist: const [],
-                    transactionidlist: const [],
+                    categoryidlist: categoryidlistlastsmonth,
                   ),
                   TabbartransactionPage(
                     incomeamount: incomeamountthismonth,
                     expenseamount: expenseamountthismonth,
                     grouptransaction: grouptransactionthismonth,
                     datelist: datelistthismonth,
-                    categoryidlist: categoryidlist,
-                    transactionidlist: transactionidlist,
+                    categoryidlist: categoryidlistthismonth,
                   ),
                   const Text('fdf'),
                 ]),

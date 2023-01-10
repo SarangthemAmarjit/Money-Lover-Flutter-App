@@ -2,6 +2,7 @@ part of 'fetchrecentdata_cubit.dart';
 
 class FetchrecentdataState extends Equatable {
   const FetchrecentdataState({
+    required this.isloading,
     required this.transactionidlist,
     required this.categoryidlist,
     required this.transaction2,
@@ -14,7 +15,7 @@ class FetchrecentdataState extends Equatable {
   final List categoyname;
   final List transaction2;
   final List categoyname2;
-
+  final bool isloading;
   final List categoryidlist;
 
   final List transactionidlist;

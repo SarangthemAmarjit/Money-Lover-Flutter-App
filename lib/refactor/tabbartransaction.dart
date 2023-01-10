@@ -12,16 +12,15 @@ class TabbartransactionPage extends StatelessWidget {
   final Map<String, List<dynamic>> grouptransaction;
   final List datelist;
   final List categoryidlist;
-  final List transactionidlist;
 
-  TabbartransactionPage(
-      {super.key,
-      required this.incomeamount,
-      required this.expenseamount,
-      required this.grouptransaction,
-      required this.datelist,
-      required this.categoryidlist,
-      required this.transactionidlist});
+  TabbartransactionPage({
+    super.key,
+    required this.incomeamount,
+    required this.expenseamount,
+    required this.grouptransaction,
+    required this.datelist,
+    required this.categoryidlist,
+  });
 
   var currencyformat =
       NumberFormat.currency(locale: 'en_IN', symbol: '', decimalDigits: 0);

@@ -10,14 +10,14 @@ part 'querydatathismonth_state.dart';
 class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
   QuerydatathismonthCubit()
       : super(const QuerydatathismonthState(
-            expensetotalamountthismonth: 0,
-            incometotalamountthismonth: 0,
-            categoryidlist: [],
-            categoyname: [],
-            datelist: [],
-            grouptransaction: {},
-            transaction: [],
-            transactionidlist: [])) {
+          expensetotalamountthismonth: 0,
+          incometotalamountthismonth: 0,
+          categoryidlist: [],
+          categoyname: [],
+          datelist: [],
+          grouptransaction: {},
+          transaction: [],
+        )) {
     getthismonthquery();
   }
   Future getthismonthquery() async {
@@ -82,6 +82,7 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
           j++;
         }
       }
+      log(transactionidlist.toString());
 
       var result = Map.fromIterables(categoryidlist, cateogoryname);
       log('this month${transaction.toString()}');
@@ -124,7 +125,6 @@ class QuerydatathismonthCubit extends Cubit<QuerydatathismonthState> {
         datelist: datelist,
         expensetotalamountthismonth: totalamountexthismonth,
         incometotalamountthismonth: incomeamountexthismonth,
-        transactionidlist: transactionidlist,
       ));
     });
   }

@@ -21,7 +21,7 @@ class BargraphPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    log(lastmonthamount.toString());
+    log('last month :${lastmonthamount.toString()}');
     log(thismonthamount.toString());
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),

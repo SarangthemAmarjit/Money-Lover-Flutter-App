@@ -22,7 +22,15 @@ class _TransactionPageState extends State<SelectionPage> {
   TextEditingController categorynamecontroller = TextEditingController();
   TextEditingController addcategorynamecontroller = TextEditingController();
   List number = [1, 2, 3, 4, 5, 6, 7, 8];
-  type categorytype = type.Income;
+  type categorytype = type.Expense;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    categorynamecontroller.dispose();
+    addcategorynamecontroller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -206,8 +214,9 @@ class _TransactionPageState extends State<SelectionPage> {
                                                     Colors.green);
                                                 addcategorynamecontroller
                                                     .clear();
-
-                                                categorytype = type.Income;
+                                                setState() {
+                                                  categorytype = type.Expense;
+                                                }
                                               },
                                               child: Text(
                                                 'SAVE',
@@ -278,13 +287,12 @@ class _TransactionPageState extends State<SelectionPage> {
                                                       child: RadioListTile(
                                                           activeColor:
                                                               Colors.green,
-                                                          toggleable: true,
                                                           title: Text(
-                                                            "Income",
+                                                            "Expense",
                                                             style: GoogleFonts
                                                                 .kreon(),
                                                           ),
-                                                          value: type.Income,
+                                                          value: type.Expense,
                                                           groupValue:
                                                               categorytype,
                                                           onChanged: (value) {
@@ -298,12 +306,13 @@ class _TransactionPageState extends State<SelectionPage> {
                                                       child: RadioListTile(
                                                           activeColor:
                                                               Colors.green,
+                                                          toggleable: true,
                                                           title: Text(
-                                                            "Expense",
+                                                            "Income",
                                                             style: GoogleFonts
                                                                 .kreon(),
                                                           ),
-                                                          value: type.Expense,
+                                                          value: type.Income,
                                                           groupValue:
                                                               categorytype,
                                                           onChanged: (value) {

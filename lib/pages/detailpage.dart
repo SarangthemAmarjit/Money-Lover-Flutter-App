@@ -51,7 +51,8 @@ class _DetailPageState extends State<DetailPage> {
   Timestamp? datetime2;
   String datetimefordisplay = 'Today';
 
-  Future<void> _navigateAndDisplaySelection(BuildContext context) async {
+  Future<void> _navigateAndDisplaySelection(
+      BuildContext context, void Function(void Function()) setState) async {
     // Navigator.push returns a Future that completes after calling
     // Navigator.pop on the Selection Screen.
     final result = await context.router.push(const SelectionRoute());
@@ -65,9 +66,10 @@ class _DetailPageState extends State<DetailPage> {
     if (result != null) {
       var item = await ServiceApi().getspecificcategory(id: result.toString());
       setState(() {
-        resultvalue = item['name'];
+        resultvalue = item.data()!['name'];
         categoryid = result.toString();
       });
+      log(resultvalue);
     }
 
     // ScaffoldMessenger.of(context)
@@ -184,263 +186,269 @@ class _DetailPageState extends State<DetailPage> {
                                     '${widget.date.day}-${widget.date.month}-${widget.date.year}';
                                 categoryid = widget.categoryid;
                               });
+                              log(resultvalue);
                               showModalBottomSheet<void>(
                                 isScrollControlled: true,
                                 context: context,
                                 builder: (BuildContext context2) {
-                                  return Scaffold(
-                                    backgroundColor:
-                                        const Color.fromARGB(26, 250, 250, 250),
-                                    body: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                          const SizedBox(
-                                            height: 40,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 10),
-                                            child: ListTile(
-                                              tileColor: Colors.white,
-                                              leading: InkWell(
-                                                  onTap: () {
-                                                    Navigator.pop(context);
-                                                    setState(() {
-                                                      resultvalue =
-                                                          'Select Category';
-                                                    });
-                                                  },
-                                                  child: const Icon(
-                                                    Icons.close,
-                                                    size: 30,
-                                                    color: Colors.black,
-                                                  )),
-                                              title: Padding(
-                                                padding: const EdgeInsets.only(
-                                                    left: 15),
-                                                child: Text(
-                                                  'Edit Transaction',
-                                                  style: GoogleFonts.kreon(
-                                                      fontSize: 20),
+                                  return StatefulBuilder(
+                                      builder: ((context, setState) {
+                                    return Scaffold(
+                                      backgroundColor: const Color.fromARGB(
+                                          26, 250, 250, 250),
+                                      body: Center(
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: <Widget>[
+                                            const SizedBox(
+                                              height: 40,
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10),
+                                              child: ListTile(
+                                                tileColor: Colors.white,
+                                                leading: InkWell(
+                                                    onTap: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.close,
+                                                      size: 30,
+                                                      color: Colors.black,
+                                                    )),
+                                                title: Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          left: 15),
+                                                  child: Text(
+                                                    'Edit Transaction',
+                                                    style: GoogleFonts.kreon(
+                                                        fontSize: 20),
+                                                  ),
                                                 ),
-                                              ),
-                                              trailing: TextButton(
-                                                onPressed: () async {
-                                                  if (amountcontroller
-                                                          .text.isEmpty ||
-                                                      categoryid.isEmpty) {
-                                                    context.router.pop();
-                                                    CustomSnackBar(
-                                                        context,
-                                                        Text(
-                                                          'All Fields Are Mandatory',
-                                                          style: GoogleFonts
-                                                              .kreon(),
-                                                        ),
-                                                        Colors.red);
-                                                  } else {
-                                                    await ServiceApi()
-                                                        .updatetransaction(
-                                                            amount:
-                                                                int.parse(
-                                                                    amountcontroller
-                                                                        .text),
-                                                            categoryid:
-                                                                categoryid,
-                                                            notes:
-                                                                notecontroller
-                                                                    .text,
-                                                            date: Timestamp
-                                                                .fromDate(widget
-                                                                    .date),
-                                                            id: widget
-                                                                .transactionid);
-                                                    Navigator.pop(context2);
-                                                    Navigator.pop(context);
-                                                    amountcontroller.clear();
-                                                    CustomSnackBar(
-                                                        context,
-                                                        const Text(
-                                                            'Updated Transaction Successfully'),
-                                                        Colors.green);
-                                                    setState(() {
-                                                      resultvalue =
-                                                          'Select Category';
+                                                trailing: TextButton(
+                                                  onPressed: () async {
+                                                    if (amountcontroller
+                                                            .text.isEmpty ||
+                                                        categoryid.isEmpty) {
+                                                      context.router.pop();
+                                                      CustomSnackBar(
+                                                          context,
+                                                          Text(
+                                                            'All Fields Are Mandatory',
+                                                            style: GoogleFonts
+                                                                .kreon(),
+                                                          ),
+                                                          Colors.red);
+                                                    } else {
+                                                      await ServiceApi()
+                                                          .updatetransaction(
+                                                              amount: int.parse(
+                                                                  amountcontroller
+                                                                      .text),
+                                                              categoryid:
+                                                                  categoryid,
+                                                              notes:
+                                                                  notecontroller
+                                                                      .text,
+                                                              date: Timestamp
+                                                                  .fromDate(
+                                                                      widget
+                                                                          .date),
+                                                              id: widget
+                                                                  .transactionid);
+                                                      Navigator.pop(context2);
+                                                      Navigator.pop(context);
+                                                      amountcontroller.clear();
+                                                      CustomSnackBar(
+                                                          context,
+                                                          const Text(
+                                                              'Updated Transaction Successfully'),
+                                                          Colors.green);
+                                                      setState(() {
+                                                        resultvalue =
+                                                            'Select Category';
 
-                                                      categoryid = '';
-                                                    });
-                                                  }
-                                                },
-                                                child: Text(
-                                                  'SAVE',
-                                                  style: GoogleFonts.kreon(
-                                                      fontSize: 18),
+                                                        categoryid = '';
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Text(
+                                                    'SAVE',
+                                                    style: GoogleFonts.kreon(
+                                                        fontSize: 18),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                          const SizedBox(
-                                            height: 30,
-                                          ),
-                                          Container(
-                                            height: 300,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            color: Colors.white,
-                                            child: Column(
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 20,
-                                                          right: 20,
-                                                          bottom: 10),
-                                                  child: Row(
-                                                    children: [
-                                                      const FaIcon(
-                                                        FontAwesomeIcons
-                                                            .sackDollar,
-                                                        size: 30,
-                                                      ),
-                                                      Flexible(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20),
-                                                          child: TextFormField(
-                                                            keyboardType:
-                                                                TextInputType
-                                                                    .number,
-                                                            controller:
-                                                                amountcontroller,
-                                                            decoration: InputDecoration(
-                                                                hintStyle: GoogleFonts.kreon(
-                                                                    color: Colors
-                                                                        .black26,
-                                                                    fontSize:
-                                                                        18),
-                                                                hintText:
-                                                                    'Enter Your Amount'),
-                                                          ),
+                                            const SizedBox(
+                                              height: 30,
+                                            ),
+                                            Container(
+                                              height: 300,
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              color: Colors.white,
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20,
+                                                            right: 20,
+                                                            bottom: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        const FaIcon(
+                                                          FontAwesomeIcons
+                                                              .sackDollar,
+                                                          size: 30,
                                                         ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 20,
-                                                          right: 20,
-                                                          bottom: 10),
-                                                  child: Row(
-                                                    children: [
-                                                      const FaIcon(
-                                                        FontAwesomeIcons
-                                                            .circleQuestion,
-                                                        size: 30,
-                                                      ),
-                                                      Flexible(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20),
-                                                          child: TextFormField(
-                                                            showCursor: false,
-                                                            onTap: () {
-                                                              _navigateAndDisplaySelection(
-                                                                  context);
-                                                            },
-                                                            decoration: InputDecoration(
-                                                                hintStyle: GoogleFonts.kreon(
-                                                                    color: resultvalue ==
-                                                                            'Select Category'
-                                                                        ? Colors
-                                                                            .black26
-                                                                        : Colors
-                                                                            .black,
-                                                                    fontSize:
-                                                                        18),
-                                                                hintText:
-                                                                    resultvalue),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 20,
-                                                          right: 20,
-                                                          bottom: 10),
-                                                  child: Row(
-                                                    children: [
-                                                      const FaIcon(
-                                                        FontAwesomeIcons
-                                                            .noteSticky,
-                                                        size: 30,
-                                                      ),
-                                                      Flexible(
-                                                        child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20),
-                                                          child: TextFormField(
-                                                            controller:
-                                                                notecontroller,
-                                                            decoration: InputDecoration(
-                                                                hintStyle: GoogleFonts.kreon(
-                                                                    color: Colors
-                                                                        .black26,
-                                                                    fontSize:
-                                                                        18),
-                                                                hintText:
-                                                                    'Write Note'),
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      horizontal: 20),
-                                                  child: Row(
-                                                    children: [
-                                                      const FaIcon(
-                                                        FontAwesomeIcons
-                                                            .calendar,
-                                                        size: 30,
-                                                      ),
-                                                      Flexible(
-                                                        child: Padding(
+                                                        Flexible(
+                                                          child: Padding(
                                                             padding:
                                                                 const EdgeInsets
                                                                         .only(
                                                                     left: 20),
                                                             child:
-                                                                _dataofbirth()),
-                                                      )
-                                                    ],
+                                                                TextFormField(
+                                                              keyboardType:
+                                                                  TextInputType
+                                                                      .number,
+                                                              controller:
+                                                                  amountcontroller,
+                                                              decoration: InputDecoration(
+                                                                  hintStyle: GoogleFonts.kreon(
+                                                                      color: Colors
+                                                                          .black26,
+                                                                      fontSize:
+                                                                          18),
+                                                                  hintText:
+                                                                      'Enter Your Amount'),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20,
+                                                            right: 20,
+                                                            bottom: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        const FaIcon(
+                                                          FontAwesomeIcons
+                                                              .circleQuestion,
+                                                          size: 30,
+                                                        ),
+                                                        Flexible(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 20),
+                                                            child:
+                                                                TextFormField(
+                                                              showCursor: false,
+                                                              onTap: () {
+                                                                _navigateAndDisplaySelection(
+                                                                    context,
+                                                                    setState);
+                                                              },
+                                                              decoration: InputDecoration(
+                                                                  hintStyle: GoogleFonts.kreon(
+                                                                      color: resultvalue ==
+                                                                              'Select Category'
+                                                                          ? Colors
+                                                                              .black26
+                                                                          : Colors
+                                                                              .black,
+                                                                      fontSize:
+                                                                          18),
+                                                                  hintText:
+                                                                      resultvalue),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 20,
+                                                            right: 20,
+                                                            bottom: 10),
+                                                    child: Row(
+                                                      children: [
+                                                        const FaIcon(
+                                                          FontAwesomeIcons
+                                                              .noteSticky,
+                                                          size: 30,
+                                                        ),
+                                                        Flexible(
+                                                          child: Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 20),
+                                                            child:
+                                                                TextFormField(
+                                                              controller:
+                                                                  notecontroller,
+                                                              decoration: InputDecoration(
+                                                                  hintStyle: GoogleFonts.kreon(
+                                                                      color: Colors
+                                                                          .black26,
+                                                                      fontSize:
+                                                                          18),
+                                                                  hintText:
+                                                                      'Write Note'),
+                                                            ),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 20),
+                                                    child: Row(
+                                                      children: [
+                                                        const FaIcon(
+                                                          FontAwesomeIcons
+                                                              .calendar,
+                                                          size: 30,
+                                                        ),
+                                                        Flexible(
+                                                          child: Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                          .only(
+                                                                      left: 20),
+                                                              child:
+                                                                  _dataofbirth()),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
+                                    );
+                                  }));
                                 },
                               );
                             },
