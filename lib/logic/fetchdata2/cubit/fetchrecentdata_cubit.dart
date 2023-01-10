@@ -21,10 +21,8 @@ class FetchrecentdataCubit extends Cubit<FetchrecentdataState> {
   }
   DocumentSnapshot? lastdocument;
 
-  List transactionidlist = [];
-  List cateogoryname = [];
-  List transaction = [];
   bool isMoredata = true;
+  int datalimit = 0;
 
   void getdatalist() async {
     final CollectionReference<Map<String, dynamic>> expenditurelist =
@@ -34,16 +32,19 @@ class FetchrecentdataCubit extends Cubit<FetchrecentdataState> {
       if (isMoredata) {
         if (lastdocument != null) {
           log('last');
+          log(datalimit.toString());
           expenditurelist
-              .limit(12)
+              .limit(datalimit = datalimit + 12)
               .orderBy('date', descending: true)
-              .startAfterDocument(lastdocument!)
               .snapshots()
               .listen((event) async {
             List transaction2 = [];
             List cateogoryname2 = [];
             List datelist = [];
             List categoryidlist = [];
+            List transactionidlist = [];
+            List cateogoryname = [];
+            List transaction = [];
 
             for (var message in event.docs) {
               var data = await ServiceApi()
@@ -57,8 +58,8 @@ class FetchrecentdataCubit extends Cubit<FetchrecentdataState> {
               lastdocument = event.docs.last;
               log('lastdocument${lastdocument!.data().toString()}');
               log(event.docs.length.toString());
-              if (event.docs.length < 12) {
-                log('item is lesss than 12');
+              if (event.docs.length < datalimit) {
+                log('item is lesss than $datalimit');
                 isMoredata = false;
               }
             }
@@ -78,7 +79,7 @@ class FetchrecentdataCubit extends Cubit<FetchrecentdataState> {
         } else {
           log('Initial');
           expenditurelist
-              .limit(12)
+              .limit(datalimit = datalimit + 12)
               .orderBy('date', descending: true)
               .snapshots()
               .listen((event) async {
@@ -86,6 +87,9 @@ class FetchrecentdataCubit extends Cubit<FetchrecentdataState> {
             List cateogoryname2 = [];
             List datelist = [];
             List categoryidlist = [];
+            List transactionidlist = [];
+            List cateogoryname = [];
+            List transaction = [];
 
             for (var message in event.docs) {
               var data = await ServiceApi()
